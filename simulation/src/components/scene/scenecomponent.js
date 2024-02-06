@@ -3,23 +3,27 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 
-// Define the SceneComponent. It's a functional component that takes props. 
-// The "onObjectLoad" prop is a function that will be called when an object is loaded.
-const SceneComponent = ({ onObjectLoad }) => {
-  // useRef is a hook that allows you to persist values between renders without causing a re-render.
-  const mountRef = useRef(null);
+// TODO: Figure out why I can't have each model uploaded. (One by one!)
+// TODO: Login (Probably Backend for this). 
+// TODO: Better "Load Model" button.
+// TODO: how can I have the 3d model show 360 degrees. 
+// TODO: App.css fix. 
+// TODO: How can I make this a robotics full comprehensive software?
 
-  // useState is a hook that lets you add React state to functional components.
-  // We initialize the Three.js scene, camera, renderer, and object loader.
+/**
+ * This function is a React component that sets up a Three.js scene and allows for loading .obj files.
+ *
+ * @param {function} onObjectLoad - a callback function to be called when the .obj file is loaded
+ * @return {JSX} - the JSX for the file input and Three.js canvas
+ */
+const SceneComponent = ({ onObjectLoad }) => {
+  const mountRef = useRef(null);
   const [scene] = useState(new THREE.Scene());
   const [camera] = useState(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
   const [renderer] = useState(new THREE.WebGLRenderer());
   const [objectLoader] = useState(new OBJLoader());
 
-  // useEffect is a hook that lets you perform side effects in functional components.
-  // It's a place where you can interact with the Three.js library, which is outside of React's purview.
   useEffect(() => {
-    // Set up the renderer size and append its DOM element to the ref we defined.
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current.appendChild(renderer.domElement);
 

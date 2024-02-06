@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import SceneComponent from './components/scene/scenecomponent'; // Ensure the correct path and casing
-import './App.css'; // Assuming you have a CSS file for basic styling
+import SceneComponent from './components/scene/scenecomponent'; 
+import './App.css'; 
 
+/**
+ * A function that represents the main App component.
+ *
+ * @return {JSX.Element} The main App component
+ */
 const App = () => {
   // State for loading feedback
   const [isLoading, setIsLoading] = useState(false);
@@ -12,11 +17,23 @@ const App = () => {
     setLoadError(''); // Reset any previous errors
   };
 
+  /**
+   * Handles the loading of an object.
+   *
+   * @param {Object} object - the object being loaded
+   * @return {void} 
+   */
   const handleObjectLoad = (object) => {
     console.log("Object loaded:", object);
     setIsLoading(false); // End loading
   };
 
+  /**
+   * Handle the error that occurs when loading an object.
+   *
+   * @param {Error} error - the error that occurred
+   * @return {void} 
+   */
   const handleObjectLoadError = (error) => {
     console.error("Loading error:", error);
     setLoadError('Failed to load object. Please try again.');
