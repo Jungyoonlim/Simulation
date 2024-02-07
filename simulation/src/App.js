@@ -1,6 +1,9 @@
 import './App.css'; 
 import React, { useState } from 'react';
-import SceneComponent from './components/scene/scenecomponent'; 
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// import SceneComponent from './components/scene/scenecomponent'; 
+import ModelDisplayPage from './components/ModelDisplayPage/ModelDisplayPage';
+import ModelSelectionPage from './components/ModelSelectionPage/ModelSelectionPage';
 
 /**
  * A function that represents the main App component.
@@ -41,17 +44,18 @@ const App = () => {
   };
 
   return (
-    <div className="app-container" style={{ width: '100vw', height: '100vh' }}>
+    <Router>
+      <div className="app-container" style={{ width: '100vw', height: '100vh' }}>
       {isLoading && <div className="loading-indicator">Loading...</div>}
       {loadError && <div className="error-message">{loadError}</div>}
-      <SceneComponent 
-        onObjectLoad={handleObjectLoad} 
-        onObjectLoadStart={handleObjectLoadStart}
-        onObjectLoadError={handleObjectLoadError}
-      />
-    </div>
-  );
-};
+      <Routes>
+        <Route path="/" element={<ModelSelectionPage />} />
+        <Route path="/display" element={<ModelDisplayPage />} />
+      </Routes>
+      </div>
+    </Router>
+  ); 
+}
 
 export default App;
 
