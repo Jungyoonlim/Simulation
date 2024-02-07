@@ -1,12 +1,6 @@
 # Simulation: 3D Software.
 
-Let's become 4D+ beings. 
-
-
-
-
-
-
+Robots and Design. 
 
 ## Progress
 ### February
@@ -31,16 +25,15 @@ Let's become 4D+ beings.
 <img width="1512" alt="Screenshot 2024-02-07 at 3 40 39 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/f4f14940-d749-406d-b20f-ff250cc7b516">
 - [] IN-PROGRESS: Fix Buttons.
 
+- [] TODO: Annotations on 3D Model. 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
 - [] TODO: Collaboration?
 - [] TODO: Login (Probably Backend for this). 
-- [] TODO: Build out database (PostgresSQL). 
+- [] TODO: Build out database (PostgresSQL) to have users store their annotations on 3D models.
+- [] TODO: Integration with Frontend. 
 - [] TODO: Testing for backend and frontend.
 - [] TODO: Users to Interact with 3D Model. (Need to think more on how to interact with the model)
 - [] TODO: How can I make this a robotics full comprehensive software?
-- [] TODO: Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) -- 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
-
-
 - [] TODO: LLM to build a 3D model? 
 
 - [] TODO: What's useful software for robotics?
