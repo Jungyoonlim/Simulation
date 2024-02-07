@@ -2,13 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-
-// TODO: Figure out why I can't have each model uploaded. (One by one!)
-// TODO: Login (Probably Backend for this). 
-// TODO: Better "Load Model" button.
-// TODO: how can I have the 3d model show 360 degrees. 
-// TODO: App.css fix. 
-// TODO: How can I make this a robotics full comprehensive software?
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 
 /**
  * This function is a React component that sets up a Three.js scene and allows for loading .obj files.
@@ -17,11 +11,12 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
  * @return {JSX} - the JSX for the file input and Three.js canvas
  */
 const SceneComponent = ({ onObjectLoad }) => {
-  const mountRef = useRef(null);
-  const [scene] = useState(new THREE.Scene());
-  const [camera] = useState(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
-  const [renderer] = useState(new THREE.WebGLRenderer());
-  const [objectLoader] = useState(new OBJLoader());
+    const mountRef = useRef(null);
+    const [scene] = useState(new THREE.Scene());
+    const [camera] = useState(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
+    const [renderer] = useState(new THREE.WebGLRenderer());
+    const [objectLoader] = useState(new OBJLoader());
+    const [currentObject, setCurrentObject] = useState(null); 
 
   useEffect(() => {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -47,11 +42,25 @@ const SceneComponent = ({ onObjectLoad }) => {
     };
   }, [camera, renderer, scene]); // The array here lists dependencies which, when changed, will re-run the effect.
 
-  // Define a function to handle the .obj file loading. It uses the FileReader API to read the contents of the file.
   const handleLoadObject = (event) => {
     const file = event.target.files[0];
     if (!file) {
       return;
+    }
+    
+    if (currentObject) {
+      scene.remove(currentObject);
+      // Dispose of the object if necessary to free up memory
+      if (currentObject.geometry) currentObject.geometry.dispose();
+      if (currentObject.material) currentObject.material.dispose();
+      // If the object has children like a group, you may need to dispose of their geometries and materials as well
+      currentObject.traverse(child => {
+        if (child.isMesh) {
+          child.geometry.dispose();
+          child.material.dispose();
+        }
+      });
+      setCurrentObject(null); // Clear the current object
     }
 
     const reader = new FileReader();
@@ -66,6 +75,8 @@ const SceneComponent = ({ onObjectLoad }) => {
           child.material = new THREE.MeshNormalMaterial();
         }
       });
+
+      setCurrentObject(object);
       // Add the loaded object to the scene.
       scene.add(object);
       // Call the "onObjectLoad" prop function to notify the parent component that the object has been loaded.
@@ -80,7 +91,7 @@ const SceneComponent = ({ onObjectLoad }) => {
         type="file"
         onChange={handleLoadObject}
         accept=".obj"
-        style={{ position: 'absolute', zIndex: 1 }}
+        className="choose-file-button"
       />
       <div ref={mountRef} style={{ width: '100%', height: '100vh' }} />
     </>
