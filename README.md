@@ -26,7 +26,10 @@ Let's become 4D+ beings.
 - [x] DONE: Better Lighting. 
 - [x] DONE: CSS Fixes for prettier UI. 
 
-- [] IN-PROGRESS: Fix Buttons. 
+
+<img width="1511" alt="Screenshot 2024-02-07 at 3 40 56 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/9f68c133-3da8-47ff-bf82-3ef36503cf7c">
+<img width="1512" alt="Screenshot 2024-02-07 at 3 40 39 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/f4f14940-d749-406d-b20f-ff250cc7b516">
+- [] IN-PROGRESS: Fix Buttons.
 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
 - [] TODO: Collaboration?
