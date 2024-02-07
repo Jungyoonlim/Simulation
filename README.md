@@ -14,11 +14,12 @@ Robots and Design.
 <details>
   <summary>Feb 7th, 2024</summary>
       <img width="1512" alt="Screenshot 2024-02-07 at 1 29 44 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/1fbf22de-8250-49db-874c-c73c007f3f6f">
-    - [x] DONE: Redirection to another page. (BrowserRouter, two new pages: ModelSelection and ModelDisplay) 
-    - [x] DONE: original colors for 3D models. 
-    - [x] DONE: how can I have the 3d model show 360 degrees. 
-    - [x] DONE: Better Lighting. 
-    - [x] DONE: CSS Fixes for prettier UI. 
+     
+- [x] DONE: Redirection to another page. (BrowserRouter, two new pages: ModelSelection and ModelDisplay) 
+- [x] DONE: original colors for 3D models. 
+- [x] DONE: how can I have the 3d model show 360 degrees. 
+- [x] DONE: Better Lighting. 
+- [x] DONE: CSS Fixes for prettier UI. 
 
 
   <img width="1511" alt="Screenshot 2024-02-07 at 3 40 56 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/9f68c133-3da8-47ff-bf82-3ef36503cf7c">
@@ -28,7 +29,9 @@ Robots and Design.
 
 <details>
      <summary>Rest of February</summary>
-     - [] TODO: Annotations on 3D Model. 
+     
+     
+- [] TODO: Annotations on 3D Model. 
      - [] TODO: Bring the Prototype 3D -> 2D Unwrap Logic. (Bring from PyQt Project)
      - [] TODO: Find ways of using AI to unwrap. or learn some Computer Graphics. 
      - [] TODO: Collaboration?
