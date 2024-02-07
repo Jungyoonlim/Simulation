@@ -27,17 +27,17 @@ const App = () => {
   };
 
   /**
-   * Handle the error that occurs when loading an object.
+   * Handles the selection of a model file.
    *
-   * @param {Error} error - the error that occurred
+   * @param {File} file - the selected model file
    * @return {void} 
    */
-
-
+  //TODO: The handleModelFileSelect function should set the model file URL correctly before navigating to the display page.
   const handleModelFileSelect = (file) => {
     setModelFile(file);
   };
 
+  // Render the App component
   return (
     <Router>
       <div className="app-container" style={{ width: '100vw', height: '100vh' }}>

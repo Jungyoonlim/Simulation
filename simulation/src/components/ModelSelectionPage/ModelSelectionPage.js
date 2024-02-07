@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function ModelSelectionPage({ setModelFile }){
     const navigate = useNavigate();
 
+    // TODO: The handleFileSelect function should check if a file was selected before attempting to set the model file URL.
     const handleFileSelect = (file) => {
         const url = URL.createObjectURL(file);
         setModelFile(url); 

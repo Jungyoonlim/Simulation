@@ -10,7 +10,7 @@ Let's become 4D+ beings.
 - [x] DONE: App.css fix. 
 - [x] DONE: Better "Load Model" button.
 
-### Feb 7th, 2024 
+#### Feb 7th, 2024 
 - [] IN-PROGRESS: Modular structure for SceneComponent.js 
 - [] IN-PROGRESS: Redirection to another page. (BrowserRouter, two new pages: ModelSelection and ModelDisplay) 
 
