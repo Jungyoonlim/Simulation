@@ -13,8 +13,6 @@ const App = () => {
   // State for loading feedback
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
-  const [modelPath, setModelPath] = useState('');
-  const [mtlPath, setMtlPath] = useState('');
   const [modelFile, setModelFile] = useState(null); 
 
   const handleObjectLoadStart = () => {
@@ -64,4 +62,3 @@ const App = () => {
 }
 
 export default App;
-
