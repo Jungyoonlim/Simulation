@@ -12,6 +12,7 @@ Let's become 4D+ beings.
 ### February
 #### Feb 6th, 2024 
 <img width="1512" alt="Screenshot 2024-02-06 at 5 16 15 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/f34a32ac-94d4-4caa-8a2c-ed8645a31cf1">
+
 - [x] DONE: Figure out why I can't have each model uploaded. (One by one!)
 - [x] DONE: App.css fix. 
 - [x] DONE: Better "Load Model" button.
@@ -22,10 +23,10 @@ Let's become 4D+ beings.
 - [x] DONE: Redirection to another page. (BrowserRouter, two new pages: ModelSelection and ModelDisplay) 
 - [x] DONE: original colors for 3D models. 
 - [x] DONE: how can I have the 3d model show 360 degrees. 
+- [x] DONE: Better Lighting. 
+- [x] DONE: CSS Fixes for prettier UI. 
 
 - [] IN-PROGRESS: Fix Buttons. 
-- [] IN-PROGRESS: Better Lighting. 
-- [] IN-PROGRESS: CSS Fixes for prettier UI. 
 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
 - [] TODO: Collaboration?
@@ -34,7 +35,9 @@ Let's become 4D+ beings.
 - [] TODO: Testing for backend and frontend.
 - [] TODO: Users to Interact with 3D Model. (Need to think more on how to interact with the model)
 - [] TODO: How can I make this a robotics full comprehensive software?
-- [] TODO: Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this)
+- [] TODO: Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) -- 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
+
+
 - [] TODO: LLM to build a 3D model? 
 
 - [] TODO: What's useful software for robotics?

@@ -1,0 +1,23 @@
+/* Ensures that the background is white and content is centered */
+.app-container {
+    background-color: white; /* White background */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  /* Centers the title and button */
+  .header {
+    text-align: center; /* Center the text */
+  }
+  
+  /* Style for the choose file button */
+  .choose-file-button {
+    background-color: black; /* Black background */
+    color: white; /* White text */
+    /* Rest of your button styling */
+  }
+  

@@ -23,9 +23,17 @@ function ModelDisplayPage({ modelFile, onObjectLoad }){
     };
 
     return (
-        <div>
-            <button onClick={goBack}>Back to selection</button>
-            <SceneComponent modelPath={modelFile} onObjectLoad={onObjectLoad} />
+        <div className="app-container">
+            <div className="header">
+                <button onClick={goBack} className="back-button">Back to selection</button>
+                <input
+                    type="file"
+                    onChange={(e) => onObjectLoad(e.target.files[0])}
+                    accept=".obj"
+                    className="choose-file-button"
+                />
+            </div>
+        <SceneComponent modelPath={modelFile} onObjectLoad={onObjectLoad} />
         </div>
     );
 }
