@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 function ModelSelectionPage({ setModelFile }){
     const navigate = useNavigate();
 
-    const handleFileSelect = async (file) => {
-        setModelFile(file); 
+    const handleFileSelect = (file) => {
+        const url = URL.createObjectURL(file);
+        setModelFile(url); 
         navigate('/display');
     };
 

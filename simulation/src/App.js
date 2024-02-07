@@ -12,13 +12,8 @@ import ModelSelectionPage from './components/ModelSelectionPage/ModelSelectionPa
 const App = () => {
   // State for loading feedback
   const [isLoading, setIsLoading] = useState(false);
-  const [loadError, setLoadError] = useState('');
+  const [loadError] = useState('');
   const [modelFile, setModelFile] = useState(null); 
-
-  const handleObjectLoadStart = () => {
-    setIsLoading(true); // Start loading
-    setLoadError(''); // Reset any previous errors
-  };
 
   /**
    * Handles the loading of an object.
@@ -37,11 +32,7 @@ const App = () => {
    * @param {Error} error - the error that occurred
    * @return {void} 
    */
-  const handleObjectLoadError = (error) => {
-    console.error("Loading error:", error);
-    setLoadError('Failed to load object. Please try again.');
-    setIsLoading(false); // End loading
-  };
+
 
   const handleModelFileSelect = (file) => {
     setModelFile(file);

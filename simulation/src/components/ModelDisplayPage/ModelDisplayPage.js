@@ -1,8 +1,9 @@
+'./ModelDisplayPage'
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SceneComponent from '../scene/scenecomponent';
 
-function ModelDisplayPage({ modelPath, mtlPath, onObjectLoad }){
+function ModelDisplayPage({ modelFile, onObjectLoad }){
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,10 +17,6 @@ function ModelDisplayPage({ modelPath, mtlPath, onObjectLoad }){
         // Note: Actual model loading logic will depend on how SceneComponent expects to receive and process the model
     }, [navigate]);
 
-    const handleObjectLoaded = (object) => {
-        console.log("Object loaded:", object);
-        if (onObjectLoad) onObjectLoad(object);
-    }
 
     const goBack = () => {
         navigate(-1); // Correct usage to go back to the previous page.
@@ -28,11 +25,7 @@ function ModelDisplayPage({ modelPath, mtlPath, onObjectLoad }){
     return (
         <div>
             <button onClick={goBack}>Back to selection</button>
-            <SceneComponent 
-              modelPath={modelPath} 
-              mtlPath={mtlPath} 
-              onObjectLoad={handleObjectLoaded} 
-            />
+            <SceneComponent modelPath={modelFile} onObjectLoad={onObjectLoad} />
         </div>
     );
 }
