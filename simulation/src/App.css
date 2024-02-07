@@ -57,6 +57,7 @@
 }
 
 .choose-file-button{
+  position: absolute;
   margin: 10px; 
   background: black; 
   display: inline-block;
@@ -72,6 +73,10 @@
   color: beige; 
   box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
   transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  color: white; 
 }
 
 .choose-file-button:hover{
@@ -87,8 +92,6 @@
   top: 20px;
   left: 20px;
   margin: 10px; 
-  top: 20px;
-  left: 20px;
   padding: 10px 20px;
   border: 1px solid #555;
   border-radius: 5px;
@@ -136,4 +139,8 @@ input[type="file"]::file-selector-button:hover {
 .scene-container {
   flex-grow: 1;
   background: white; 
+}
+
+.header {
+  z-index: 10;
 }
