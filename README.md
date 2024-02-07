@@ -26,7 +26,8 @@ Robots and Design.
 - [] IN-PROGRESS: Fix Buttons.
 
 - [] TODO: Annotations on 3D Model. 
-- [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
+- [] TODO: Bring the Prototype 3D -> 2D Unwrap Logic. (Bring from PyQt Project)
+- [] TODO: Find ways of using AI to unwrap. or learn some Computer Graphics. 
 - [] TODO: Collaboration?
 - [] TODO: Login (Probably Backend for this). 
 - [] TODO: Build out database (PostgresSQL) to have users store their annotations on 3D models.
@@ -36,5 +37,8 @@ Robots and Design.
 - [] TODO: How can I make this a robotics full comprehensive software?
 - [] TODO: LLM to build a 3D model? 
 
-- [] TODO: What's useful software for robotics?
-- [] TODO: Perception Related software but probably a separate project for that. 
+### Ideas 
+- Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) -- 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
+- What's useful software for robotics?
+- Perception Related software but probably a separate project for that.
+- Collaboration 
