@@ -4,8 +4,8 @@ Robots and Design.
 
 ## Progress
 ### February
-<details id="Feb 6th, 2024">
-    #### 
+<details>
+     <summary>February 6th</summary>
       <img width="1512" alt="Screenshot 2024-02-06 at 5 16 15 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/f34a32ac-94d4-4caa-8a2c-ed8645a31cf1">
       - [x] DONE: Figure out why I can't have each model uploaded. (One by one!)
       - [x] DONE: App.css fix. 
