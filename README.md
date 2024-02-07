@@ -9,9 +9,9 @@
 - // DONE: Figure out why I can't have each model uploaded. (One by one!)
 - // DONE: App.css fix. 
 - // DONE: Better "Load Model" button.
-- // IN-PROGRESS: Modular structure 
 
-- // TODO: Redirection to another page. (BrowserRouter, two new pages: ModelSelection and ModelDisplay) 
+- // IN-PROGRESS: Modular structure 
+- // IN-PROGRESS: Redirection to another page. (BrowserRouter, two new pages: ModelSelection and ModelDisplay) 
 
 - // TODO: original colors for 3D models. 
 - // TODO: Bring the Prototype 3D -> 2D Maps Logic. 

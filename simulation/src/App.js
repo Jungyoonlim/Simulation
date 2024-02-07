@@ -1,7 +1,6 @@
 import './App.css'; 
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// import SceneComponent from './components/scene/scenecomponent'; 
 import ModelDisplayPage from './components/ModelDisplayPage/ModelDisplayPage';
 import ModelSelectionPage from './components/ModelSelectionPage/ModelSelectionPage';
 
@@ -14,6 +13,9 @@ const App = () => {
   // State for loading feedback
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
+  const [modelPath, setModelPath] = useState('');
+  const [mtlPath, setMtlPath] = useState('');
+  const [modelFile, setModelFile] = useState(null); 
 
   const handleObjectLoadStart = () => {
     setIsLoading(true); // Start loading
@@ -43,18 +45,22 @@ const App = () => {
     setIsLoading(false); // End loading
   };
 
+  const handleModelFileSelect = (file) => {
+    setModelFile(file);
+  };
+
   return (
     <Router>
       <div className="app-container" style={{ width: '100vw', height: '100vh' }}>
-      {isLoading && <div className="loading-indicator">Loading...</div>}
-      {loadError && <div className="error-message">{loadError}</div>}
-      <Routes>
-        <Route path="/" element={<ModelSelectionPage />} />
-        <Route path="/display" element={<ModelDisplayPage />} />
-      </Routes>
+        {isLoading && <div className="loading-indicator">Loading...</div>}
+        {loadError && <div className="error-message">{loadError}</div>}
+        <Routes>
+          <Route path="/" element={<ModelSelectionPage setModelFile={handleModelFileSelect} />} />
+          <Route path="/display" element={<ModelDisplayPage modelFile={modelFile} onObjectLoad={handleObjectLoad} />} />
+        </Routes>
       </div>
     </Router>
-  ); 
+  );
 }
 
 export default App;
