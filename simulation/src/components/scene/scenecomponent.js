@@ -2,6 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+// TODO: Find original color for 3D models. 
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 
 /**
@@ -10,7 +11,7 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
  * @param {function} onObjectLoad - a callback function to be called when the .obj file is loaded
  * @return {JSX} - the JSX for the file input and Three.js canvas
  */
-const SceneComponent = ({ onObjectLoad }) => {
+const SceneComponent = ({ modelPath, mtlPath, onObjectLoad }) => {
     const mountRef = useRef(null);
     const [scene] = useState(new THREE.Scene());
     const [camera] = useState(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
@@ -36,18 +37,39 @@ const SceneComponent = ({ onObjectLoad }) => {
     };
     animate();
 
+    if (mtlPath && modelPath) {
+        const mtlLoader = new MTLLoader();
+        mtlLoader.load(mtlPath, (materials) => {
+            materials.preload();
+            objectLoader.setMaterials(materials);
+            objectLoader.load(modelPath, (object) => {
+                scene.add(object);
+                setCurrentObject(object);
+                if (onObjectLoad) {
+                    onObjectLoad(object);
+                }
+            });
+        });
+    }
+
     // Return a cleanup function to remove the renderer's DOM element when the component unmounts.
     return () => {
       mountRef.current.removeChild(renderer.domElement);
     };
   }, [camera, renderer, scene]); // The array here lists dependencies which, when changed, will re-run the effect.
 
+  /**
+   * Handle the loading of an object from a file input event.
+   *
+   * @param {Event} event - the event triggered by the file input
+   * @return {void} 
+   */
   const handleLoadObject = (event) => {
     const file = event.target.files[0];
     if (!file) {
       return;
     }
-    
+
     if (currentObject) {
       scene.remove(currentObject);
       // Dispose of the object if necessary to free up memory
@@ -65,6 +87,12 @@ const SceneComponent = ({ onObjectLoad }) => {
 
     const reader = new FileReader();
     reader.readAsText(file);
+    /**
+     * Handle the onload event of the reader to parse the content of a .obj file and add the loaded object to the scene.
+     *
+     * @param {Event} e - The onload event object
+     * @return {void} 
+     */
     reader.onload = (e) => {
       const content = e.target.result;
       // Use the OBJLoader to parse the content of the .obj file.
@@ -87,13 +115,13 @@ const SceneComponent = ({ onObjectLoad }) => {
   // Return the JSX. It includes a file input for loading .obj files and a div that will contain the Three.js canvas.
   return (
     <>
+      <div ref={mountRef} style={{ width: '100%', height: '100vh' }} />
       <input
         type="file"
         onChange={handleLoadObject}
         accept=".obj"
         className="choose-file-button"
       />
-      <div ref={mountRef} style={{ width: '100%', height: '100vh' }} />
     </>
   );
 };
