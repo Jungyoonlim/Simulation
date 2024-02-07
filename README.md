@@ -4,11 +4,12 @@
 
 ## Progress
 
-[ ] Feb 6th, 2024 
+### February
+#### Feb 6th, 2024 
 - // DONE: Figure out why I can't have each model uploaded. (One by one!)
 - // DONE: App.css fix. 
 - // DONE: Better "Load Model" button.
-- // IN-PROGRESS: Modula
+- // IN-PROGRESS: Modular structure 
 
 - // TODO: Redirection to another page. 
 - // TODO: original colors for 3D models. 
