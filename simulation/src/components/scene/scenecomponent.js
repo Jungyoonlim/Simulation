@@ -102,9 +102,8 @@ function SceneComponent({ modelPath, onObjectLoad }) {
       console.error('An error happened', error);
     });
   };
-}
-  // Return the JSX. It includes a file input for loading .obj files and a div that will contain the Three.js canvas.
-  return (
+    // Return the JSX. It includes a file input for loading .obj files and a div that will contain the Three.js canvas.
+    return (
       <div ref={mountRef} style={{ width: '100%', height: '100vh' }}>
       <input
         type="file"
@@ -114,6 +113,8 @@ function SceneComponent({ modelPath, onObjectLoad }) {
       />
     </div>
 );
+}
+
 
 // Export the component so it can be used in other parts of the application.
 export default SceneComponent;
