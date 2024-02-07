@@ -46,12 +46,16 @@ Robots and Design.
 - [] TODO: LLM to build a 3D model? 
 </details>
 
+
 <details>
-     <summary>Ideas</summary>
-     - Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) -- 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
-     - What's useful software for robotics?
-     - Perception Related software but probably a separate project for that.
-     - Collaboration / Version Control for Robotics / 3D Design. 
-     - Make Beautiful Things. For Light and Love. 
+  <summary>Ideas</summary>
+
+  - Just by describing where to go in English, make the robot / 3D object move. (Need to expand on this)
+  - 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
+  - What's useful software for robotics?
+  - Perception Related software but probably a separate project for that.
+  - Collaboration / Version Control for Robotics / 3D Design. 
+  - Make Beautiful Things. For Light and Love.
 </details>
+
 
