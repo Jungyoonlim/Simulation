@@ -26,11 +26,14 @@ Let's become 4D+ beings.
 
 
 #### Feb 8th, 2024 
-- [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
-- [] TODO: Collaboration?
+
+- [] TODO: Annotation Tools! 
 - [] TODO: Login (Probably Backend for this). 
 - [] TODO: Build out database (PostgresSQL). 
-- [] TODO: Testing for backend and frontend.
+- [] TODO: Integrating backend and frontend.
+
+- [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
+- [] TODO: Collaboration?
 - [] TODO: Users to Interact with 3D Model. (Need to think more on how to interact with the model)
 - [] TODO: How can I make this a robotics full comprehensive software?
 - [] TODO: Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) 
