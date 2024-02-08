@@ -32,8 +32,8 @@ Let's become 4D+ beings.
 - [] TODO: Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) 
 
 Ideas
-    - 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
-    - Have AI to assist in building 3D ?  
+ - 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
+ - Have AI to assist in building 3D ?  
     
 
 - [] TODO: LLM to build a 3D model? 
