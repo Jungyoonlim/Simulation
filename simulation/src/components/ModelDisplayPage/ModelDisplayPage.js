@@ -1,7 +1,8 @@
-import SceneComponent from './scenecomponent';
 import './ModelDisplayPage.css';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SceneComponent from './SceneComponent';
+import AnnotationForm from './AnnotationForm';
 
 
 function ModelDisplayPage({ modelFile, onObjectLoad }){
@@ -25,16 +26,31 @@ function ModelDisplayPage({ modelFile, onObjectLoad }){
         }
     };
 
+    // Navigate to the previous page for the back button. 
     const goBack = () => {
         navigate(-1); // Correct usage to go back to the previous page.
     };
+
+    // Save the annotation to local storage when the form is submitted. TODO: Connect with Backend. 
+    const handleSaveAnnotation = (annotation) => {
+        // Save the annotation to local storage
+        const annotations = localStorage.getItem('annotations') || [];
+        const updatedAnnotations = [...annotations, annotation];
+        localStorage.setItem('annotations', JSON.stringify(updatedAnnotations));
+    }
       
     return (
         <div className="model-app-container">
             <div className="model-display-header">
                 <button onClick={goBack} className="back-button">Back to selection</button>
-                <SceneComponent modelPath={modelFile} onObjectLoad={onObjectLoad} />
             </div>
+            {currentAnnotation && (
+            <AnnotationForm
+                position={currentAnnotation.position}
+                onSave={handleSaveAnnotation}
+            />
+            )}
+            <SceneComponent modelPath={modelFile} onObjectLoad={onObjectLoad} />
         </div>
     );
 }
