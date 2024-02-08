@@ -2,12 +2,6 @@
 
 Let's become 4D+ beings. 
 
-
-
-
-
-
-
 ## Progress
 ### February
 #### Feb 6th, 2024 
@@ -26,20 +20,13 @@ Let's become 4D+ beings.
 - [x] DONE: Better Lighting. 
 - [x] DONE: CSS Fixes for prettier UI. 
 - [x] DONE: Fix Buttons. 
-- [x] DONE: CSS Fixes for prettier UI.
- 
-![Feb 7 Final V](https://github.com/Jungyoonlim/Simulation/assets/46868943/3dd0f82d-3f6f-4195-b915-ef1c24d66de0)
 
-#### Feb 8th, 2024
-- [x] DONE: Fix Buttons. 
-
-- [] TODO: Annotation Tools Added. (Maybe later AI can help annotating) 
-- [] TODO: Build out database (PostgresSQL). 
-- [] TODO: Testing for backend and frontend.
-  
-- [] TODO: Bring the Prototype 3D -> 2D Maps Unwrapping. (Bring from Unwrap PyQt Project)
+#### Feb 8th, 2024 
+- [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
 - [] TODO: Collaboration?
 - [] TODO: Login (Probably Backend for this). 
+- [] TODO: Build out database (PostgresSQL). 
+- [] TODO: Testing for backend and frontend.
 - [] TODO: Users to Interact with 3D Model. (Need to think more on how to interact with the model)
 - [] TODO: How can I make this a robotics full comprehensive software?
 - [] TODO: Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) 
