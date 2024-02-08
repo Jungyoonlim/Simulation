@@ -19,7 +19,11 @@ Let's become 4D+ beings.
 - [x] DONE: how can I have the 3d model show 360 degrees. 
 - [x] DONE: Better Lighting. 
 - [x] DONE: CSS Fixes for prettier UI. 
-- [x] DONE: Fix Buttons. 
+- [x] DONE: Fix Buttons.
+
+![Screenshot 2024-02-08 at 3 31 48 AM](https://github.com/Jungyoonlim/Simulation/assets/46868943/e9e1aae8-479e-4db5-9dff-a3b6686ddda0)
+![Screenshot 2024-02-08 at 3 32 29 AM](https://github.com/Jungyoonlim/Simulation/assets/46868943/2789e74e-f5c6-4ccb-bbc4-5fdc0e13d122)
+
 
 #### Feb 8th, 2024 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
