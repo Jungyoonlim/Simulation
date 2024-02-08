@@ -5,18 +5,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: '100vh';
+    width: 100%; 
   }
   
   .model-display-header {
+    position: relative; 
     width: 100%;
   }
   
-  .back-button {
+  .model-display-header .back-button {
     align-self: flex-start; 
     position: absolute;
     top: 20px;
-    left: 20px;
+    right: 20px;
     margin: 10px; 
     padding: 10px 20px;
     border: 1px solid #555;
@@ -56,28 +57,12 @@
     border-color: #444; 
     box-shadow: 0 6px 20px 0 rgba(93, 93, 93, 0.23);
   }
-
+  
   input[type="file"] {
-    /* Remove the default file input styling */
-    opacity: 0;
-    width: 0.1px;
-    height: 0.1px;
-    position: absolute;
-    z-index: -1;
-  }
-  
-  input[type="file"] + label {
-    /* Style the label to look like a button */
-    background-color: #444;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-align: center;
-    display: inline-block;
-    cursor: pointer;
-  }
-  
-  input[type="file"] + label:hover {
-    background-color: #555;
+    opacity: 1; 
+    width: auto; 
+    height: auto; 
+    position: relative; 
+    z-index: auto; 
   }
   

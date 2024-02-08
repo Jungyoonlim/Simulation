@@ -25,8 +25,7 @@ Let's become 4D+ beings.
 - [x] DONE: how can I have the 3d model show 360 degrees. 
 - [x] DONE: Better Lighting. 
 - [x] DONE: CSS Fixes for prettier UI. 
-
-- [] IN-PROGRESS: Fix Buttons. 
+- [x] DONE: Fix Buttons. 
 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
 - [] TODO: Collaboration?

@@ -172,6 +172,12 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     return (
       <div ref={mountRef} style={{ width: '100%', height: '100vh' }}>
         {error && <div className="error-message">{error}</div>}
+        <input
+          type="file"
+          onChange={handleLoadObject}
+          accept=".obj"
+          className="choose-file-button"
+      />
     </div>
     );
 }

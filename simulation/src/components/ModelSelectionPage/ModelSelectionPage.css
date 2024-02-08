@@ -1,49 +1,38 @@
 /* Ensures that the background is white and content is centered */
-.app-container {
-    background-color: white; /* White background */
+.header {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center vertically */
-    align-items: center; /* Center horizontally */
-    height: 100vh;
-    width: 100vw;
-    color: white; 
-  }
-  
-.header {
-    width: 100%;
-    position: relative; 
-    color: white;
- }
-  
-  /* Style for the choose file button */
-  .choose-file-button-selection {
-    position: center;
-    margin: 10px; 
-    background: black; 
-    display: inline-block;
-    outline: 0;
-    cursor: pointer;
-    border: 1px solid #333;
-    padding: 0 56px;
-    height: 45px;
-    line-height: 45px;
-    border-radius: 7px;
-    font-weight: 400;
-    font-size: 16px;
-    color: beige; 
-    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
-    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-    top: 50%; 
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    color: white; 
-  }
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+}
 
-  .choose-file-button-selection:hover{
-    background: rgba(255, 255, 255, 0.9);
-    color: white; 
-    border-color: #444; 
-    box-shadow: 0 6px 20px 0 rgba(93, 93, 93, 0.23);
-  }
   
+.choose-file-button-selection {
+  margin: 10px; 
+  background: black; 
+  display: inline-block;
+  outline: 0;
+  cursor: pointer;
+  border: 1px solid #333;
+  padding: 0 56px;
+  height: 45px;
+  line-height: 45px;
+  border-radius: 7px;
+  font-weight: 400;
+  font-size: 16px;
+  color: white; 
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.choose-file-button-selection:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: white; 
+  border-color: #444; 
+  box-shadow: 0 6px 20px 0 rgba(93, 93, 93, 0.23);
+}
+
+  input[type="file"] {
+    cursor: pointer; 
+  }

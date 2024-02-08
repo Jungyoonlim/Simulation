@@ -6,10 +6,6 @@
   overflow-x: hidden; 
 }
 
-.App {
-  text-align: center;
-}
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -56,16 +52,15 @@
   }
 }
 
-
 .app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
   background-color: black;
   color: white; 
-  display: center;
   flex-direction: column; 
   justify-content: flex-start;
-  align-items: stretch;
-  height: 100vh;
-  width: 100vw;
+  align-items: flex-start;
   margin: 0;
   padding: 0; 
 }
@@ -78,7 +73,40 @@
   transform: translateX(-50%);
 }
 
+.choose-file-button{
+  margin: 10px; 
+  background: black; 
+  display: inline-block;
+  outline: 0;
+  cursor: pointer;
+  border: 1px solid #333;
+  padding: 0 56px;
+  height: 45px;
+  line-height: 45px;
+  border-radius: 7px;
+  font-weight: 400;
+  font-size: 16px;
+  color: beige; 
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
 
-.header {
-  z-index: 10;
+.choose-file-button:hover{
+  background: white;
+  color: white; 
+  border-color: #444; 
+  box-shadow: 0 6px 20px 0 rgba(93, 93, 93, 0.23);
+}
+
+input[type="file"]::file-selector-button {
+  background: #000; 
+  color: #fff; 
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: #111; 
 }

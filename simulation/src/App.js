@@ -40,7 +40,7 @@ const App = () => {
   // Render the App component
   return (
     <Router>
-      <div className="app-container" style={{ width: '100vw', height: '100vh' }}>
+      <div className="app-container">
         {isLoading && <div className="loading-indicator">Loading...</div>}
         {loadError && <div className="error-message">{loadError}</div>}
         <Routes>
