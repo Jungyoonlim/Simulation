@@ -10,11 +10,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
  * @param {function} onObjectLoad - a callback function to be called when the .obj file is loaded
  * @return {JSX} - the JSX for the file input and Three.js canvas
  */
-function SceneComponent({ modelPath, onObjectLoad }) {
+function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     const mountRef = useRef(null);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const [currentAnnotation, setCurrentAnnotation] = useState(null);
 
     // Adjust its gamma and tone mapping settings
     renderer.gammaOutput = true;
