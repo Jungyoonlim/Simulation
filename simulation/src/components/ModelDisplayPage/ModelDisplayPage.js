@@ -1,4 +1,4 @@
-'./ModelDisplayPage'
+'./ModelDisplayPage.css';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SceneComponent from '../scene/scenecomponent';
@@ -17,6 +17,12 @@ function ModelDisplayPage({ modelFile, onObjectLoad }){
         // Note: Actual model loading logic will depend on how SceneComponent expects to receive and process the model
     }, [navigate]);
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file && onObjectLoad) {
+            onObjectLoad(file); // Assuming onObjectLoad processes and displays the selected model
+        }
+    };
 
     const goBack = () => {
         navigate(-1); // Correct usage to go back to the previous page.
@@ -28,9 +34,9 @@ function ModelDisplayPage({ modelFile, onObjectLoad }){
                 <button onClick={goBack} className="back-button">Back to selection</button>
                 <input
                     type="file"
-                    onChange={(e) => onObjectLoad(e.target.files[0])}
+                    onChange={handleFileChange}
                     accept=".obj"
-                    className="choose-file-button"
+                    className="choose-file-button-display"
                 />
             </div>
         <SceneComponent modelPath={modelFile} onObjectLoad={onObjectLoad} />

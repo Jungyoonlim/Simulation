@@ -49,6 +49,8 @@ function SceneComponent({ modelPath, onObjectLoad }) {
 
   useEffect(() => {
     const container = mountRef.current; 
+
+    // Append the renderer's DOM element to the container only if it's not already there. 
     if (container){
       renderer.setSize(window.innerWidth, window.innerHeight);
       container.appendChild(renderer.domElement);
@@ -134,7 +136,10 @@ function SceneComponent({ modelPath, onObjectLoad }) {
       // Return a cleanup function to remove the renderer's DOM element when the component unmounts.
       return () => {
         controls.dispose();
-        container.removeChild(renderer.domElement);
+
+        if (container && container.contains(renderer.domElement)){
+          container.removeChild(renderer.domElement);
+        }
       };
     }
   }, [modelPath, onObjectLoad]); // The array here lists dependencies which, when changed, will re-run the effect.
@@ -167,14 +172,8 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     return (
       <div ref={mountRef} style={{ width: '100%', height: '100vh' }}>
         {error && <div className="error-message">{error}</div>}
-      <input
-        type="file"
-        onChange={handleLoadObject}
-        accept=".obj"
-        className="choose-file-button"
-      />
     </div>
-);
+    );
 }
 
 
