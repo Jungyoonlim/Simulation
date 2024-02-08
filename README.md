@@ -24,8 +24,9 @@ Let's become 4D+ beings.
 - [x] DONE: original colors for 3D models. 
 - [x] DONE: how can I have the 3d model show 360 degrees. 
 - [x] DONE: Better Lighting. 
-- [x] DONE: CSS Fixes for prettier UI. 
-
+- [x] DONE: CSS Fixes for prettier UI.
+ 
+![Feb 7 Final V](https://github.com/Jungyoonlim/Simulation/assets/46868943/3dd0f82d-3f6f-4195-b915-ef1c24d66de0)
 - [] IN-PROGRESS: Fix Buttons. 
 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
