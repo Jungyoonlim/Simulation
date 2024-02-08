@@ -1,5 +1,5 @@
 /* Set the black background and position buttons in the corners */
-.app-container {
+.model-app-container {
     background-color: black;
     display: flex; 
     flex-direction: column;
@@ -8,7 +8,7 @@
     height: '100vh';
   }
   
-  .header {
+  .model-display-header {
     width: 100%;
   }
   
@@ -28,11 +28,13 @@
     cursor: pointer;
     z-index: 10; 
   }
-  
-  .choose-file-button-display{
+   
+  .choose-file-button-display {
     position: absolute;
-    margin: 10px; 
-    background: black; 
+    right: 20px; /* Position it 20px from the right edge */
+    top: 20px; /* Position it 20px from the top edge */
+    margin: 10px;
+    background: black;
     display: inline-block;
     outline: 0;
     cursor: pointer;
@@ -45,10 +47,7 @@
     font-size: 16px;
     box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
     transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-    top: 50%; 
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    color: white; 
+    color: white;
   }
 
   .choose-file-button-display:hover{
@@ -57,16 +56,28 @@
     border-color: #444; 
     box-shadow: 0 6px 20px 0 rgba(93, 93, 93, 0.23);
   }
+
+  input[type="file"] {
+    /* Remove the default file input styling */
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+    z-index: -1;
+  }
   
-  input[type="file"]::file-selector-button {
-    background: #000; 
-    color: #fff; 
+  input[type="file"] + label {
+    /* Style the label to look like a button */
+    background-color: #444;
+    color: white;
     padding: 10px 20px;
     border-radius: 5px;
-    border: none;
+    text-align: center;
+    display: inline-block;
     cursor: pointer;
   }
   
-  input[type="file"]::file-selector-button:hover {
-    background: #111; 
+  input[type="file"] + label:hover {
+    background-color: #555;
   }
+  

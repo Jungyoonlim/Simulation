@@ -29,8 +29,8 @@ function ModelDisplayPage({ modelFile, onObjectLoad }){
     };
 
     return (
-        <div className="app-container">
-            <div className="header">
+        <div className="model-app-container">
+            <div className="model-display-header">
                 <button onClick={goBack} className="back-button">Back to selection</button>
                 <input
                     type="file"
