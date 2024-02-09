@@ -17,6 +17,7 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     const [annotations, setAnnotations] = useState([]);
+    const [hoverMarker, setHoverMarker] = useState(null); 
     let currentModelName = useRef('');
 
     // Adjust its gamma and tone mapping settings
@@ -172,12 +173,30 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           -(event.clientY / window.innerHeight) * 2 + 1
         );
     
+        // Create a raycaster and cast a ray from the mouse position
         const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(mouse, camera);
+
+        if (hoverMarker){
+          scene.remove(hoverMarker);
+          setHoverMarker(null); 
+        }
+
         const intersects = raycaster.intersectObjects(scene.children, true);
-    
+  
         if (intersects.length > 0) {
           const intersect = intersects[0];
+          const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+          const material = new THREE.MeshBasicMaterial({
+              color: 0x00FF00,
+              transparent: true,
+              opacity: 0.5
+          });
+          const marker = new THREE.Mesh(geometry, material);
+          marker.position.copy(intersect.point);
+          scene.add(marker);
+          setHoverMarker(marker);
+
           const annotationName = prompt("Enter annotation name:", `Annotation ${annotations.length + 1}`);
           if (annotationName) {
             const annotation = {
@@ -197,6 +216,7 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
       return () => {
         cancelAnimationFrame(animate);
         renderer.domElement.removeEventListener('click', onClick);
+        if (hoverMarker) scene.remove(hoverMarker); 
         controls.dispose();
         if (container && container.contains(renderer.domElement))container.removeChild(renderer.domElement);
       };

@@ -1,15 +1,16 @@
 .annotation-marker {
-    width: 10px;
+    width: 9px;
     height: 10px;
-    background-color: lightgreen;
+    background: radial-gradient(circle, lightgreen 60%, transparent 60%);
     border-radius: 50%;
-    /* Adjust styles to visually center the dot on the click position */
     transform: translate(-50%, -50%);
+    pointer-events: none;
 }
 
 .annotation-list {
-    position: absolute;
-    top: 20px;
+    font: times-new-roman; 
+    position: flex;
+    top: 850px;
     left: 20px;
     max-height: 200px;
     overflow-y: auto;
