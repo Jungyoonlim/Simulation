@@ -28,10 +28,12 @@ Let's become 4D+ beings.
 #### Feb 8th, 2024 
 - [x] DONE: Very Simple Annotation Tool. (local host 3000 sign pop-up)
 
+<img width="516" alt="Screenshot 2024-02-09 at 2 00 19 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/a585e78e-4a26-40be-9b62-111f72719f44">
 #### Feb 9th, 2024 
 - [] IN-PROGRESS: Annotation Tracking, Shows on the website, Annotation Styling, Store. 
 - [] TODO: Login (Probably Backend for this). 
 - [] TODO: Build out database (PostgresSQL). 
+
 - [] TODO: Integrating backend and frontend.
 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
