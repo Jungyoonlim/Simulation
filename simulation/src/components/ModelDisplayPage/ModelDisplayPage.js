@@ -1,12 +1,14 @@
 import './ModelDisplayPage.css';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+// Unsure why it's still all lower caps when I changed the names
 import SceneComponent from './SceneComponent';
 import AnnotationForm from './AnnotationForm';
 
 
 function ModelDisplayPage({ modelFile, onObjectLoad }){
     const navigate = useNavigate();
+    const [currentAnnotation, setCurrentAnnotation] = useState(null);
 
     useEffect(() => {
         // Retrieve the stored model file info
@@ -46,7 +48,7 @@ function ModelDisplayPage({ modelFile, onObjectLoad }){
             </div>
             {currentAnnotation && (
             <AnnotationForm
-                position={currentAnnotation.position}
+                position={currentAnnotation}
                 onSave={handleSaveAnnotation}
             />
             )}
