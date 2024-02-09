@@ -15,8 +15,7 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    const [annotations, setAnnotations] = useState([]);
-    let currentModelName = useRef('');
+    const [currentAnnotation, setCurrentAnnotation] = useState(null);
 
     // Adjust its gamma and tone mapping settings
     renderer.gammaOutput = true;
@@ -28,20 +27,6 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     const objLoader = new OBJLoader();
     const [error, setError] = useState('');
     let currentObject = null;
-
-    // Function to adjust camera to fit the object
-    const adjustCameraToObject = (object) => {
-      const box = new THREE.Box3().setFromObject(object);
-      const size = box.getSize(new THREE.Vector3());
-      const center = box.getCenter(new THREE.Vector3());
-      const maxSize = Math.max(size.x, size.y, size.z);
-      const fov = camera.fov * (Math.PI / 180);
-      const cameraZ = Math.abs(maxSize / (2 * Math.tan(fov / 2)));
-      camera.position.z = center.z + cameraZ * 1.5; // Adjust camera distance
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.target.set(center.x, center.y, center.z);
-      controls.update();
-    };
 
     /**
      * Clean up the object from the scene.
@@ -63,29 +48,17 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
       }
     }
 
-    /** Create a marker at the specified position 
-     * @param {THREE.Vector3} position - the position of the marker
-     * @return {void}
-    */
-    const createMarker = (position) => {
-      const geometry = new THREE.SphereGeometry(0.1, 32, 32);
-      const material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
-      const marker = new THREE.Mesh(geometry, material);
-      marker.position.copy(position);
-      scene.add(marker);
-    };
+  useEffect(() => {
+    const container = mountRef.current; 
 
-    useEffect(() => {
-      const container = mountRef.current;
-      if (container && !container.contains(renderer.domElement)) {
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        container.appendChild(renderer.domElement);
-      }
-    
-     // Position the camera
-     camera.position.z = 5;
-
+    // Append the renderer's DOM element to the container only if it's not already there. 
+    if (container){
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+  
+      // Position the camera
+      camera.position.z = 5;
+  
       // Add ambient light to the scene for basic lighting.
       const ambientLight = new THREE.AmbientLight(0x404040);
       scene.add(ambientLight);
@@ -99,38 +72,36 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
       const pointLight = new THREE.PointLight(0xffffff, 1);
       pointLight.position.set(5, 5, 5);
       scene.add(pointLight);
-    
-      // OrbitControls for camera interaction
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.addEventListener('change', () => renderer.render(scene, camera)); // Use if there's no animation loop
-    
-      // Animation loop
+  
+      const controls = new OrbitControls(camera, renderer.domElement); 
+      // Define an animation loop to render the scene.
       const animate = () => {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-        controls.update();
+        requestAnimationFrame(animate); 
+
+        if (controls.enabled && controls.update()) {
+          renderer.render(scene, camera);
+        }
       };
       animate();
-    
-      // Load model if modelPath is provided
+  
       if (modelPath) {
-        const objLoader = new OBJLoader;
+        const objLoader = new OBJLoader; 
 
-        // Load the .obj file 
+        // Load the .obj file
         objLoader.load(modelPath, (object) => {
-          cleanObject(currentObject); 
+          cleanObject(currentObject);
           currentObject = object;
-              
-            // Apply a new material to each child mesh within the loaded object
+
+          // Apply a new material to each child mesh within the loaded object
           object.traverse(child => {
             if (child instanceof THREE.Mesh) {
               child.material = new THREE.MeshStandardMaterial({ 
-              color: 0xE6E6E6,
-              metalness: 0.5, 
-              roughness: 0.4 
-            });
-          }
-        });
+                color: 0xE6E6E6,
+                metalness: 0.5, 
+                roughness: 0.4 
+              });
+            }
+          });
 
           // Calculate the bounding box and center of the object
           const box = new THREE.Box3().setFromObject(object);
@@ -150,57 +121,29 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           scene.add(object);
 
           // Call the onObjectLoad callback if provided
-          if (onObjectLoad) onObjectLoad(object);
+          if (onObjectLoad) {
+            onObjectLoad(object);
+          }
 
           // Update the controls and render the scene
           controls.update();
 
-          },
-          undefined,
-          error => {
-            console.error('An error happened:', error);
-            setError('Failed to load the model.');
-          }
-        );
+        }, undefined, (error) => {
+          console.error('An error happened', error);
+          setError('Failed to load the model.');
+        });
       }
-    
-      // Handle scene clicks for annotations
-      const onClick = (event) => {
-        const mouse = new THREE.Vector2(
-          (event.clientX / window.innerWidth) * 2 - 1,
-          -(event.clientY / window.innerHeight) * 2 + 1
-        );
-    
-        const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(scene.children, true);
-    
-        if (intersects.length > 0) {
-          const intersect = intersects[0];
-          const annotationName = prompt("Enter annotation name:", `Annotation ${annotations.length + 1}`);
-          if (annotationName) {
-            const annotation = {
-              name: annotationName,
-              modelName: modelPath, // Assuming modelPath includes the file name
-              position: intersect.point
-            };
-            setAnnotations(prevAnnotations => [...prevAnnotations, annotation]);
-            createMarker(intersect.point);
-          }
+  
+      // Return a cleanup function to remove the renderer's DOM element when the component unmounts.
+      return () => {
+        controls.dispose();
+
+        if (container && container.contains(renderer.domElement)){
+          container.removeChild(renderer.domElement);
         }
       };
-    
-      renderer.domElement.addEventListener('click', onClick);
-    
-      // Cleanup function
-      return () => {
-        cancelAnimationFrame(animate);
-        renderer.domElement.removeEventListener('click', onClick);
-        controls.dispose();
-        if (container && container.contains(renderer.domElement))container.removeChild(renderer.domElement);
-      };
-    }, [modelPath, onObjectLoad, annotations]);
-    
+    }
+  }, [modelPath, onObjectLoad]); // The array here lists dependencies which, when changed, will re-run the effect.
 
   /**
    * Handle the loading of an object from a file input event.
@@ -210,20 +153,22 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
    */
   const handleLoadObject = (event) => {
     const file = event.target.files[0];
-    if (!file) return; 
-    currentModelName.current=file.name; 
+    if (!file) {
+      return;
+    }
 
     const url = URL.createObjectURL(file);
     objLoader.load(url, (object) => {
       cleanObject(currentObject);
       currentObject = object;
       scene.add(object);
-      if (onObjectLoad) onObjectLoad(object);
+      if (onObjectLoad) {
+        onObjectLoad(object);
+      }
     }, undefined, (error) => {
-      console.error('Failed to load the model.', error);
+      console.error('An error happened', error);
     });
   };
-
     // Return the JSX. It includes a file input for loading .obj files and a div that will contain the Three.js canvas.
     return (
       <div ref={mountRef} style={{ width: '100%', height: '100vh' }}>

@@ -27,7 +27,8 @@ Let's become 4D+ beings.
 
 #### Feb 8th, 2024 
 
-- [] TODO: Annotation Tools! 
+- [] IN-PROGRESS: Annotation Tools! 
+
 - [] TODO: Login (Probably Backend for this). 
 - [] TODO: Build out database (PostgresSQL). 
 - [] TODO: Integrating backend and frontend.
@@ -41,6 +42,8 @@ Let's become 4D+ beings.
 Ideas
  - 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
  - Have AI to assist in building 3D ?  
+ - 3D Data Labeling
+ - 3D NFT Artwork? (https://www.escherreality.com/nft-artwork/)
     
 
 - [] TODO: LLM to build a 3D model? 
