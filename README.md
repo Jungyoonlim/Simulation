@@ -26,15 +26,16 @@ Let's become 4D+ beings.
 
 
 #### Feb 8th, 2024 
+- [x] DONE: Very Simple Annotation Tool. (local host 3000 sign pop-up)
 
-- [] IN-PROGRESS: Annotation Tools! 
-
+#### Feb 9th, 2024 
+- [] IN-PROGRESS: Annotation Tracking, Shows on the website, Annotation Styling, Store. 
 - [] TODO: Login (Probably Backend for this). 
 - [] TODO: Build out database (PostgresSQL). 
 - [] TODO: Integrating backend and frontend.
 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
-- [] TODO: Collaboration?
+- [] TODO: Collaboration - Like Git Version of this. 
 - [] TODO: Users to Interact with 3D Model. (Need to think more on how to interact with the model)
 - [] TODO: How can I make this a robotics full comprehensive software?
 - [] TODO: Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) 
