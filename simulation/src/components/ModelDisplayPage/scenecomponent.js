@@ -276,7 +276,15 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           onChange={handleLoadObject}
           accept=".obj"
           className="choose-file-button"
-      />
+        />
+        <div className="annotation-list">
+          {annotations.map((annotation, index) => (
+            <div key={index} className="annotation-item">
+              {`Annotation ${index + 1} - (${annotation.position.x.toFixed(2)}, ${annotation.position.y.toFixed(2)}, ${annotation.position.z.toFixed(2)})`}
+            </div>
+          ))}
+
+        </div>
           {annotations.map((annotation, index) => (
                 <div className="annotation-marker" key={index} style={{ 
                     position: 'absolute', 
