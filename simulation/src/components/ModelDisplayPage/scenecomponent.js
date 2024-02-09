@@ -280,17 +280,8 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
               {`Annotation ${index + 1} - (${annotation.position.x.toFixed(2)}, ${annotation.position.y.toFixed(2)}, ${annotation.position.z.toFixed(2)})`}
             </div>
           ))}
-
         </div>
-          {annotations.map((annotation, index) => (
-                <div className="annotation-marker" key={index} style={{ 
-                    position: 'absolute', 
-                    left: `${annotation.position.x}px`, 
-                    top: `${annotation.position.y}px` 
-                }}>
-                    {annotation.name}
-                </div>
-            ))}
+
             <div className="annotation-list">
             {annotations.map((annotation, index) => (
               <div className="annotation-marker" key={index} style={{ 
