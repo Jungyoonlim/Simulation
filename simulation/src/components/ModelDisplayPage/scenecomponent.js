@@ -1,4 +1,5 @@
 // Import necessary modules from React and Three.js.
+import './SceneComponent.css'; 
 import React, { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
@@ -234,6 +235,22 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           accept=".obj"
           className="choose-file-button"
       />
+          {annotations.map((annotation, index) => (
+                <div className="annotation-marker" key={index} style={{ 
+                    position: 'absolute', 
+                    left: `${annotation.position.x}px`, 
+                    top: `${annotation.position.y}px` 
+                }}>
+                    {annotation.name}
+                </div>
+            ))}
+            <div className="annotation-list">
+                {annotations.map((annotation, index) => (
+                    <div key={index}>
+                        {annotation.name} - ({annotation.position.x.toFixed(2)}, {annotation.position.y.toFixed(2)}, {annotation.position.z.toFixed(2)})
+                    </div>
+                ))}
+            </div>
     </div>
     );
 }
