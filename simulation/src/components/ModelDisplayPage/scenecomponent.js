@@ -165,9 +165,28 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           }
         );
       }
+
+      /**
+       * Converts a 3D position in the scene to 2D screen coordinates. 
+       * 
+       * @param {THREE.Vector3} position - The 3D Position to convert.
+       * @param {THREE.Camera} camera - The Three.js camera. 
+       * @param {HTMLElement} canvas - The canvas element where the scene is rendered.
+       * @return {THREE.Vector2} - The 2D position on the screen. 
+       */
+      const toScreenPosition = (position, camera, canvas) => {
+        const vector = new THREE.Vector3(position.x, position.y, position.z);
+        vector.project(camera);
+
+        vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
+        vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
+
+        return vector;
+      }
     
       // Handle scene clicks for annotations
       const onClick = (event) => {
+        // Get the mouse position
         const mouse = new THREE.Vector2(
           (event.clientX / window.innerWidth) * 2 - 1,
           -(event.clientY / window.innerHeight) * 2 + 1
@@ -198,11 +217,14 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           setHoverMarker(marker);
 
           const annotationName = prompt("Enter annotation name:", `Annotation ${annotations.length + 1}`);
+
+          const screenPosition = toScreenPosition(intersect.point, camera, renderer.domElement);
           if (annotationName) {
             const annotation = {
               name: annotationName,
-              modelName: modelPath, // Assuming modelPath includes the file name
-              position: intersect.point
+              modelName: modelPath, 
+              position: intersect.point,
+              screenPosition: screenPosition
             };
             setAnnotations(prevAnnotations => [...prevAnnotations, annotation]);
             createMarker(intersect.point);
@@ -265,11 +287,15 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
                 </div>
             ))}
             <div className="annotation-list">
-                {annotations.map((annotation, index) => (
-                    <div key={index}>
-                        {annotation.name} - ({annotation.position.x.toFixed(2)}, {annotation.position.y.toFixed(2)}, {annotation.position.z.toFixed(2)})
-                    </div>
-                ))}
+            {annotations.map((annotation, index) => (
+              <div className="annotation-marker" key={index} style={{ 
+                  position: 'absolute', 
+                  left: `${annotation.screenPosition.x}px`, 
+                  top: `${annotation.screenPosition.y}px` 
+              }}>
+                  {annotation.name}
+              </div>
+            ))}
             </div>
     </div>
     );
