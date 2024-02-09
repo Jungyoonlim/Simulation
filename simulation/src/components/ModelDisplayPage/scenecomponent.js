@@ -186,7 +186,6 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     
       // Handle scene clicks for annotations
       const onClick = (event) => {
-        // Get the mouse position
         const mouse = new THREE.Vector2(
           (event.clientX / window.innerWidth) * 2 - 1,
           -(event.clientY / window.innerHeight) * 2 + 1
@@ -200,11 +199,11 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           scene.remove(hoverMarker);
           setHoverMarker(null); 
         }
-
         const intersects = raycaster.intersectObjects(scene.children, true);
-  
+
         if (intersects.length > 0) {
           const intersect = intersects[0];
+          const screenPosition = toScreenPosition(intersect.point, camera, renderer.domElement); 
           const geometry = new THREE.SphereGeometry(0.1, 32, 32);
           const material = new THREE.MeshBasicMaterial({
               color: 0x00FF00,
@@ -217,8 +216,6 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           setHoverMarker(marker);
 
           const annotationName = prompt("Enter annotation name:", `Annotation ${annotations.length + 1}`);
-
-          const screenPosition = toScreenPosition(intersect.point, camera, renderer.domElement);
           if (annotationName) {
             const annotation = {
               name: annotationName,

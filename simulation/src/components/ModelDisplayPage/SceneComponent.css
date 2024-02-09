@@ -5,6 +5,7 @@
     border-radius: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
+    transition: left 0.3s ease-out, top 0.3s ease-out; /* Smooth transition for position changes */
 }
 
 .annotation-list {
