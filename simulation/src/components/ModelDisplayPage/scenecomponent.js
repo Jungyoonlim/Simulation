@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import PropTypes from 'prop-types';
 
 
   // Function to convert 3D position to 2D screen coordinates, defined inside the component
@@ -22,7 +23,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
  * @param {function} onObjectLoad - a callback function to be called when the .obj file is loaded
  * @return {JSX} - the JSX for the file input and Three.js canvas
  */
-function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
+function SceneComponent({ modelPath, onObjectLoad }) {
     const mountRef = useRef(null);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -30,6 +31,11 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     const [annotations, setAnnotations] = useState([]);
     const [hoverMarker, setHoverMarker] = useState(null); 
     let currentModelName = useRef('');
+
+    SceneComponent.propTypes = {
+        modelPath: PropTypes.string.isRequired,
+        onObjectLoad: PropTypes.func,
+    }
 
     // Adjust its gamma and tone mapping settings
     renderer.gammaOutput = true;
@@ -98,12 +104,12 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
         container.appendChild(renderer.domElement);
       }
     
-  // Position the camera
-  camera.position.z = 5;
+    // Position the camera
+    camera.position.z = 5;
 
-  // Add ambient light to the scene for basic lighting.
-  const ambientLight = new THREE.AmbientLight(0x404040);
-  scene.add(ambientLight);
+    // Add ambient light to the scene for basic lighting.
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
 
     // Add directional light to the scene
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -126,23 +132,23 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
       });
     };
 
-// Render function that updates both the scene and the annotations
-const render = () => {
-  renderer.render(scene, camera);
-  updateAnnotationScreenPositions(); // Dynamically updates annotation positions
-};
+  // Render function that updates both the scene and the annotations
+  const render = () => {
+    renderer.render(scene, camera);
+    updateAnnotationScreenPositions(); // Dynamically updates annotation positions
+  };
 
-       // OrbitControls for camera interaction
-       const controls = new OrbitControls(camera, renderer.domElement);
-       controls.addEventListener('change', render);
+  // OrbitControls for camera interaction
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.addEventListener('change', render);
 
     // Animation loop
     const animate = () => {
       if (!mountRef.current) return; 
       requestAnimationFrame(animate);
       render();
-  };
-  animate();
+    };
+    animate();
     
       // Load model if modelPath is provided
       if (modelPath) {
