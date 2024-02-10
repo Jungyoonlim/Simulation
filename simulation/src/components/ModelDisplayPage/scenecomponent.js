@@ -124,6 +124,7 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           annotation.markerElement.style.top = `${screenPosition.y}px`;
         }
       });
+    };
 
 // Render function that updates both the scene and the annotations
 const render = () => {
@@ -251,7 +252,7 @@ const render = () => {
         controls.dispose();
         if (container && container.contains(renderer.domElement))container.removeChild(renderer.domElement);
       };
-    }, [modelPath, onObjectLoad, annotations]);
+    }, [modelPath, onObjectLoad, annotations]); 
     
 
   /**
