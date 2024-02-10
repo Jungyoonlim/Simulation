@@ -2,7 +2,12 @@
 
 This project integrates `Three.js` with React to create a 3D model viewer capable of loading `.obj` files, handling annotations with coordinates, dynamically updating the scene with user interactions. 
 
-In the future, it will have backend to let you to store your annotations and save your 3D files with your annotations (that you could locally save `.obj` file), and have computer vision AI to name your annotations.
+In the future, it will have:
+ (i) Better UI/UX + Manipulation of objects.  
+ (ii) Back-end to let you to store your annotations and save your 3D files with your annotations (that you could locally save `.obj` file). 
+ (iii) Computer vision to automatically name your annotations.
+
+My goal eventually is build a robotics simulation engine with this project. 
 
 ## Progress
 ### February
@@ -33,7 +38,9 @@ In the future, it will have backend to let you to store your annotations and sav
 <img width="1503" alt="Screenshot 2024-02-09 at 2 15 11 PM" src="https://github.com/Jungyoonlim/Simulation/assets/46868943/79a9e5b1-b4a6-4fa8-8036-91e4eb89809a">
 
 #### Feb 9th, 2024 
-- [] IN-PROGRESS: Annotation Tracking, Shows on the website, Annotation Styling, Store. 
+- [x] DONE: Annotation List on the website. 
+- [] IN-PROGRESS: Annotation Tracking, Annotation Styling
+- [] TODO: Annotation Store.  
 - [] TODO: Login (Probably Backend for this). 
 - [] TODO: Build out database (PostgresSQL). 
 
