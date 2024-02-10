@@ -6,8 +6,8 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 
-     // Function to convert 3D position to 2D screen coordinates, defined inside the component
-     const toScreenPosition = (position, camera, canvas) => {
+  // Function to convert 3D position to 2D screen coordinates, defined inside the component
+  const toScreenPosition = (position, camera, canvas) => {
       const vector = new THREE.Vector3(position.x, position.y, position.z);
       vector.project(camera);
 
@@ -98,54 +98,48 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
         container.appendChild(renderer.domElement);
       }
     
-     // Position the camera
-     camera.position.z = 5;
+  // Position the camera
+  camera.position.z = 5;
 
-      // Add ambient light to the scene for basic lighting.
-      const ambientLight = new THREE.AmbientLight(0x404040);
-      scene.add(ambientLight);
+  // Add ambient light to the scene for basic lighting.
+  const ambientLight = new THREE.AmbientLight(0x404040);
+  scene.add(ambientLight);
 
-      // Add directional light to the scene
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-      directionalLight.position.set(0, 1, 0);
-      scene.add(directionalLight);
+    // Add directional light to the scene
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(0, 1, 0);
+    scene.add(directionalLight);
 
-      // Add point light for lighting the scene
-      const pointLight = new THREE.PointLight(0xffffff, 1);
-      pointLight.position.set(5, 5, 5);
-      scene.add(pointLight);
+    // Add point light for lighting the scene
+    const pointLight = new THREE.PointLight(0xffffff, 1);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
 
-      const renderAnnotations = () => {
-        annotations.forEach((annotation) => {
-          const screenPosition = toScreenPosition(annotation.position, camera, renderer.domElement);
-          // Each annotation has a reference to its marker DOM element
-          const markerElement = annotation.markerElement;
-          if (markerElement){
-            markerElement.style.left = `${screenPosition.x}px`;
-            markerElement.style.top = `${screenPosition.y}px`;
-          }
-        });
-      };
+    // Function to update annotation screen positions  
+    const updateAnnotationScreenPositions = () => {
+      annotations.forEach(annotation => {
+        const screenPosition = toScreenPosition(annotation.position, camera, renderer.domElement);
+        if (annotation.markerElement) {
+          annotation.markerElement.style.left = `${screenPosition.x}px`;
+          annotation.markerElement.style.top = `${screenPosition.y}px`;
+        }
+      });
+
+// Render function that updates both the scene and the annotations
+const render = () => {
+  renderer.render(scene, camera);
+  updateAnnotationScreenPositions(); // Dynamically updates annotation positions
+};
 
        // OrbitControls for camera interaction
        const controls = new OrbitControls(camera, renderer.domElement);
-
-         // Function to update annotation screen positions
-         const updateAnnotationScreenPositions = () => {
-          const newAnnotations = annotations.map(annotation => {
-              const screenPosition = toScreenPosition(annotation.position, camera, renderer.domElement);
-              return { ...annotation, screenPosition };
-          });
-          setAnnotations(newAnnotations);
-      };
-
-       controls.addEventListener('change', updateAnnotationScreenPositions); 
+       controls.addEventListener('change', render);
 
     // Animation loop
     const animate = () => {
+      if (!mountRef.current) return; 
       requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-      controls.update();
+      render();
   };
   animate();
     
@@ -317,7 +311,6 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     </div>
     );
 }
-
 
 // Export the component so it can be used in other parts of the application.
 export default SceneComponent;
