@@ -1,13 +1,12 @@
 # Simulation: 3D Software.
 
-This project integrates `Three.js` with React to create a 3D model viewer capable of loading `.obj` files, handling annotations with coordinates, dynamically updating the scene with user interactions. 
+## Overview 
+This project integrates `Three.js` with React to create a 3D model viewer capable of loading `.obj` files, handling annotations with coordinates, dynamically updating the scene with user interactions. My goal eventually is build a robotics simulation engine with this project. 
 
 In the future, it will have:
  - (i) Better UI/UX + Manipulation of objects.  
  - (ii) Back-end to let you to store your annotations and save your 3D files with your annotations (that you could locally save `.obj` file). 
  - (iii) Computer vision to automatically annotate your models.
-
-My goal eventually is build a robotics simulation engine with this project. 
 
 ## Progress
 ### February
