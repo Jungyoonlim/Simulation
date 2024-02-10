@@ -1,6 +1,8 @@
 # Simulation: 3D Software.
 
-Let's become 4D+ beings. 
+This project integrates `Three.js` with React to create a 3D mdoel viewer capable of loading `.obj` files, handling annotations with coordinates, dynamically updating the scene with user interactions. 
+
+In the future, it will have backend to let you to store your annotations and save your 3D files with your annotations (that you could locally save `.obj` file), and have computer vision AI to name your annotations.
 
 ## Progress
 ### February
