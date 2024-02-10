@@ -5,6 +5,17 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+
+     // Function to convert 3D position to 2D screen coordinates, defined inside the component
+     const toScreenPosition = (position, camera, canvas) => {
+      const vector = new THREE.Vector3(position.x, position.y, position.z);
+      vector.project(camera);
+
+      vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
+      vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
+
+      return { x: vector.x, y: vector.y };
+  };
 /**
  * This function is a React component that sets up a Three.js scene and allows for loading .obj files.
  *
@@ -30,6 +41,7 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     const objLoader = new OBJLoader();
     const [error, setError] = useState('');
     let currentObject = null;
+
 
     // Function to adjust camera to fit the object
     const adjustCameraToObject = (object) => {
@@ -78,6 +90,7 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
     };
 
     useEffect(() => {
+          // Function to convert 3D position to 2D screen coordinates.
       const container = mountRef.current;
       if (container && !container.contains(renderer.domElement)) {
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -101,18 +114,40 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
       const pointLight = new THREE.PointLight(0xffffff, 1);
       pointLight.position.set(5, 5, 5);
       scene.add(pointLight);
-    
-      // OrbitControls for camera interaction
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.addEventListener('change', () => renderer.render(scene, camera)); // Use if there's no animation loop
-    
-      // Animation loop
-      const animate = () => {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-        controls.update();
+
+      const renderAnnotations = () => {
+        annotations.forEach((annotation) => {
+          const screenPosition = toScreenPosition(annotation.position, camera, renderer.domElement);
+          // Each annotation has a reference to its marker DOM element
+          const markerElement = annotation.markerElement;
+          if (markerElement){
+            markerElement.style.left = `${screenPosition.x}px`;
+            markerElement.style.top = `${screenPosition.y}px`;
+          }
+        });
       };
-      animate();
+
+       // OrbitControls for camera interaction
+       const controls = new OrbitControls(camera, renderer.domElement);
+
+         // Function to update annotation screen positions
+         const updateAnnotationScreenPositions = () => {
+          const newAnnotations = annotations.map(annotation => {
+              const screenPosition = toScreenPosition(annotation.position, camera, renderer.domElement);
+              return { ...annotation, screenPosition };
+          });
+          setAnnotations(newAnnotations);
+      };
+
+       controls.addEventListener('change', updateAnnotationScreenPositions); 
+
+    // Animation loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+      controls.update();
+  };
+  animate();
     
       // Load model if modelPath is provided
       if (modelPath) {
@@ -165,24 +200,6 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
           }
         );
       }
-
-      /**
-       * Converts a 3D position in the scene to 2D screen coordinates. 
-       * 
-       * @param {THREE.Vector3} position - The 3D Position to convert.
-       * @param {THREE.Camera} camera - The Three.js camera. 
-       * @param {HTMLElement} canvas - The canvas element where the scene is rendered.
-       * @return {THREE.Vector2} - The 2D position on the screen. 
-       */
-      const toScreenPosition = (position, camera, canvas) => {
-        const vector = new THREE.Vector3(position.x, position.y, position.z);
-        vector.project(camera);
-
-        vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
-        vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
-
-        return vector;
-      }
     
       // Handle scene clicks for annotations
       const onClick = (event) => {
@@ -234,6 +251,7 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
       // Cleanup function
       return () => {
         cancelAnimationFrame(animate);
+        controls.removeEventListener('change', updateAnnotationScreenPositions);
         renderer.domElement.removeEventListener('click', onClick);
         if (hoverMarker) scene.remove(hoverMarker); 
         controls.dispose();
@@ -250,19 +268,22 @@ function SceneComponent({ modelPath, onObjectLoad, onAnnotationCreate }) {
    */
   const handleLoadObject = (event) => {
     const file = event.target.files[0];
-    if (!file) return; 
-    currentModelName.current=file.name; 
-
-    const url = URL.createObjectURL(file);
-    objLoader.load(url, (object) => {
-      cleanObject(currentObject);
-      currentObject = object;
-      scene.add(object);
-      if (onObjectLoad) onObjectLoad(object);
-    }, undefined, (error) => {
-      console.error('Failed to load the model.', error);
-    });
+    if (file) {
+      const url = URL.createObjectURL(file);
+      objLoader.load(url, (object) => {
+        // Clean up previous object
+        cleanObject(currentObject);
+        currentObject = object;
+        scene.add(object);
+        adjustCameraToObject(object); // Ensure the camera fits the new object
+        if (onObjectLoad) onObjectLoad(object);
+      }, undefined, (error) => {
+        console.error('Failed to load the model:', error);
+        setError('Failed to load the model.');
+      });
+    }
   };
+  
 
     // Return the JSX. It includes a file input for loading .obj files and a div that will contain the Three.js canvas.
     return (
