@@ -40,6 +40,7 @@ This project integrates `Three.js` with React to create a 3D model viewer capabl
 - [x] DONE: Annotation List on the website. 
 
 #### Feb 10th, 2024
+- [] IN-PROGRESS: Learning `Three.js` properly. 
 - [] IN-PROGRESS: Annotation Tracking, Annotation Styling
 - [] IN-PROGRESS: Annotation Store.  
 - [] IN-PROGRESS: Integrating backend and frontend.
