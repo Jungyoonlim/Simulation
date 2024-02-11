@@ -1,8 +1,8 @@
 from . import db
 
 # Define the Annotation model  
-class Annotation(db.model):
-    # id = db.Column(db.Integer, primary_key=True)
+class Annotation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=True)
     position_x = db.Column(db.Float, nullable=False)
     position_y = db.Column(db.Float, nullable=False)
