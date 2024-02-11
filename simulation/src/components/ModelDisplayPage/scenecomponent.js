@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import PropTypes from 'prop-types';
-
+import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
   // Function to convert 3D position to 2D screen coordinates, defined inside the component
   const toScreenPosition = (position, camera, canvas) => {
@@ -121,6 +121,13 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
+    // Initialize CSS2DRenderer
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0px';
+    mountRef.current.appendChild(labelRenderer.domElement);
+
     // Function to update annotation screen positions  
     const updateAnnotationScreenPositions = () => {
       annotations.forEach(annotation => {
@@ -131,11 +138,21 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         }
       });
     };
+  
+  // For each annotation
+  const createAnnotation = (position, text) => {
+    const div = document.createElement('div');
+    div.className = 'annotation';
+    div.textContent = text;
+    const label = new CSS2DObject(div);
+    label.position.copy(position);
+    scene.add(label); 
+  }
 
   // Render function that updates both the scene and the annotations
   const render = () => {
     renderer.render(scene, camera);
-    updateAnnotationScreenPositions(); // Dynamically updates annotation positions
+    labelRenderer.render(scene, camera); 
   };
 
   // OrbitControls for camera interaction
