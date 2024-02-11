@@ -49,21 +49,24 @@ This project integrates `Three.js` with React to create a 3D model viewer capabl
 - [] TODO: Login (Probably Backend for this). 
 - [] TODO: Build out database (PostgresSQL). 
 
+# PLANS FOR A ROBOTICS ENVIRONMENT SIMULATION SOFTWARE: 
+- [] TODO: Object Detection and Recognition. Integrate TensorFlow.js to detect objects.
+- [] TODO: Path Planning Visualization. Draw Lines and Paths in my 3D Scene that represent the robot's planned movement. Calculate paths using algorithms like A or RRT then visualizing these paths with `three.js` objects like `THREE.Line.4` 
+- [] TODO: Simulate Robot Movement and Interaction: Controls for simulated robot movement within the 3D environment. Moving an object around the scene first then simulating physics for realistic interactions. 
+- [] TODO: Have sensor readings from real-world data from robots and convert data formats to `three.js` to update the scene in real-time. 
 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
 - [] TODO: Collaboration - Like Git Version of this. 
 - [] TODO: Users to Interact with 3D Model. (Need to think more on how to interact with the model)
-- [] TODO: How can I make this a robotics full comprehensive software?
+
 - [] TODO: Just by describing where to go in English, make the robot / 3D object to move. (Need to expand on this) 
 
 Ideas
  - 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
  - Have AI to assist in building 3D ?  
- - 3D Data Labeling
  - 3D NFT Artwork? (https://www.escherreality.com/nft-artwork/)
     
 
 - [] TODO: LLM to build a 3D model? 
-- [] TODO: What's useful software for robotics?
-- [] TODO: Perception Related software but probably a separate project for that. 
+
 
