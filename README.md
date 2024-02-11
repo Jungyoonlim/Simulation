@@ -38,12 +38,16 @@ This project integrates `Three.js` with React to create a 3D model viewer capabl
 
 #### Feb 9th, 2024 
 - [x] DONE: Annotation List on the website. 
+
+#### Feb 10th, 2024
 - [] IN-PROGRESS: Annotation Tracking, Annotation Styling
-- [] TODO: Annotation Store.  
+- [] IN-PROGRESS: Annotation Store.  
+- [] IN-PROGRESS: Integrating backend and frontend.
+
+
 - [] TODO: Login (Probably Backend for this). 
 - [] TODO: Build out database (PostgresSQL). 
 
-- [] TODO: Integrating backend and frontend.
 
 - [] TODO: Bring the Prototype 3D -> 2D Maps Logic. (Bring from PyQt Project)
 - [] TODO: Collaboration - Like Git Version of this. 
