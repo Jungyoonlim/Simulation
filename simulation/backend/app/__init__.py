@@ -1,13 +1,20 @@
-from flask import Flask
+from flask import Flask, request, jsonify 
 from flask_cors import CORS 
-from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
 CORS(app)
 
-from app import routes, models 
+@app.route('/')
+def intro():
+    return "This is RothkoAI."
+
+@app.route('/annotations', methods=['POST'])
+def add_annotation():
+    data = request.get_json()
+    print("Received annotation data:", data)
+
+    return jsonify(data), 201
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+

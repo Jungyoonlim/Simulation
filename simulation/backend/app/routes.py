@@ -22,12 +22,3 @@ def add_annotation():
     else:
         annotations = Annotation.query.all()
         return jsonify([annotation.to_dict() for annotation in annotations])
-
-"""
-Get all annotations from the database.
-This function takes no parameters and returns a JSON object representing the annotations.
-"""
-@app.route('/annotations', methods=['GET'])
-def get_annotations():
-    annotations = Annotation.query.all()
-    return jsonify([annotation.to_dict() for annotation in annotations])

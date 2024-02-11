@@ -5,10 +5,9 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import PropTypes from 'prop-types';
-import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
-/**
- * // Function to convert 3D position to 2D screen coordinates, defined inside the component -> Manual Method Redacted. 
+
+  // Function to convert 3D position to 2D screen coordinates, defined inside the component
   const toScreenPosition = (position, camera, canvas) => {
       const vector = new THREE.Vector3(position.x, position.y, position.z);
       vector.project(camera);
@@ -18,9 +17,6 @@ import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRe
 
       return { x: vector.x, y: vector.y };
   };
- * 
- */
-
 /**
  * This function is a React component that sets up a Three.js scene and allows for loading .obj files.
  *
@@ -90,15 +86,34 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     /** Create a marker at the specified position 
      * @param {THREE.Vector3} position - the position of the marker
      * @return {void}
-     * 
-     * const createMarker = (position) => {
+    */
+    const createMarker = (position) => {
       const geometry = new THREE.SphereGeometry(0.1, 32, 32);
       const material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
       const marker = new THREE.Mesh(geometry, material);
       marker.position.copy(position);
       scene.add(marker);
     };
-    */
+
+    const createAnnotation = (position, text) => {
+      const annotationData = {
+        modelName: modelPath,
+        position_x: position.x,
+        position_y: position.y,
+        position_z: position.z,
+        text: text
+      };
+      fetch('http://localhost:5000/annotations', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(annotationData),
+    })
+    .then(response => response.json())
+    .then(data => console.log('Annotation added:', data))
+    .catch((error) => console.error('Error:', error));
+    }
 
     useEffect(() => {
           // Function to convert 3D position to 2D screen coordinates.
@@ -126,17 +141,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
-    // Initialize CSS2DRenderer
-    const labelRenderer = new CSS2DRenderer();
-    labelRenderer.setSize(window.innerWidth, window.innerHeight);
-    labelRenderer.domElement.style.position = 'absolute';
-    labelRenderer.domElement.style.top = '0px';
-    labelRenderer.domElement.style.pointEvents = 'none';
-    mountRef.current.appendChild(labelRenderer.domElement);
-
-    /** 
-     * 
-     * // Function to update annotation screen positions  
+    // Function to update annotation screen positions  
     const updateAnnotationScreenPositions = () => {
       annotations.forEach(annotation => {
         const screenPosition = toScreenPosition(annotation.position, camera, renderer.domElement);
@@ -146,27 +151,16 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         }
       });
     };
-    */
-  
-  // Function to create an annotation
-  const createAnnotation = (position, text) => {
-    const div = document.createElement('div');
-    div.className = 'annotation';
-    div.textContent = text;
-    const label = new CSS2DObject(div);
-    label.position.copy(position);
-    scene.add(label); 
-  }
 
-  // Render function that updates both the scene and the annotations
-  const render = () => {
-    renderer.render(scene, camera);
-    labelRenderer.render(scene, camera); 
-  };
+    // Render function that updates both the scene and the annotations
+    const render = () => {
+      renderer.render(scene, camera);
+      updateAnnotationScreenPositions(); // Dynamically updates annotation positions
+    };
 
-  // OrbitControls for camera interaction
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.addEventListener('change', render);
+    // OrbitControls for camera interaction
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.addEventListener('change', render);
 
     // Animation loop
     const animate = () => {
@@ -227,59 +221,66 @@ function SceneComponent({ modelPath, onObjectLoad }) {
           }
         );
       }
-    // Handle scene clicks for annotations
-const onClick = (event) => {
-  const mouse = new THREE.Vector2(
-    (event.clientX / window.innerWidth) * 2 - 1,
-    -(event.clientY / window.innerHeight) * 2 + 1
-  );
+    
+      // Handle scene clicks for annotations
+      const onClick = (event) => {
+        const mouse = new THREE.Vector2(
+          (event.clientX / window.innerWidth) * 2 - 1,
+          -(event.clientY / window.innerHeight) * 2 + 1
+        );
+    
+        // Create a raycaster and cast a ray from the mouse position
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
 
-  // Create a raycaster and cast a ray from the mouse position
-  const raycaster = new THREE.Raycaster();
-  raycaster.setFromCamera(mouse, camera);
+        if (hoverMarker){
+          scene.remove(hoverMarker);
+          setHoverMarker(null); 
+        }
+        const intersects = raycaster.intersectObjects(scene.children, true);
 
-  if (hoverMarker) {
-    scene.remove(hoverMarker);
-    setHoverMarker(null);
-  }
-  const intersects = raycaster.intersectObjects(scene.children, true);
+        if (intersects.length > 0) {
+          const intersect = intersects[0];
+          const screenPosition = toScreenPosition(intersect.point, camera, renderer.domElement); 
+          const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+          const material = new THREE.MeshBasicMaterial({
+              color: 0x00FF00,
+              transparent: true,
+              opacity: 0.5
+          });
+          const marker = new THREE.Mesh(geometry, material);
+          marker.position.copy(intersect.point);
+          scene.add(marker);
+          setHoverMarker(marker);
 
-  if (intersects.length > 0) {
-    const intersect = intersects[0];
-    const annotationName = prompt("Enter annotation name:", `Annotation ${annotations.length + 1}`);
-    if (annotationName) {
-      // Correctly call createAnnotation with the intersect point and annotation name
-      createAnnotation(intersect.point, annotationName);
+          const annotationName = prompt("Enter annotation name:", `Annotation ${annotations.length + 1}`);
+          if (annotationName) {
+            const annotation = {
+              name: annotationName,
+              modelName: modelPath, 
+              position: intersect.point,
+              screenPosition: screenPosition
+            };
+            setAnnotations(prevAnnotations => [...prevAnnotations, annotation]);
+            createMarker(intersect.point);
+          }
 
-      // Then update the annotations state correctly
-      setAnnotations(prevAnnotations => [...prevAnnotations, {
-        name: annotationName,
-        position: intersect.point,
-      }]);
-    }
-  }
-};
-
-renderer.domElement.addEventListener('click', onClick);
+          const position = {x: 0.1, y: 0.1, z:0.1};
+          const text = "Example text";
+          createAnnotation(position,text);
+        }
+      };
+    
+      renderer.domElement.addEventListener('click', onClick);
     
       // Cleanup function
       return () => {
         cancelAnimationFrame(animate);
-        controls.removeEventListener('change', render);
-        
-        // Remove any temporary or hover markers. 
+        controls.removeEventListener('change', updateAnnotationScreenPositions);
+        renderer.domElement.removeEventListener('click', onClick);
         if (hoverMarker) scene.remove(hoverMarker); 
         controls.dispose();
-         
-        // Since CSS2DRenderer doesn't require disposal like WebGL resources, we primarily need to ensure its DOM element is removed if dynamically added
-        if (mountRef.current && mountRef.current.contains(labelRenderer.domElement)) {
-          mountRef.current.removeChild(labelRenderer.domElement);
-        }
-
-        // Remove the WebGL renderer's DOM element from its container to clean up
-        if (mountRef.current && mountRef.current.contains(renderer.domElement)) {
-          mountRef.current.removeChild(renderer.domElement);
-        }
+        if (container && container.contains(renderer.domElement))container.removeChild(renderer.domElement);
       };
     }, [modelPath, onObjectLoad, annotations]); 
     
@@ -307,6 +308,7 @@ renderer.domElement.addEventListener('click', onClick);
       });
     }
   };
+  
 
     // Return the JSX. It includes a file input for loading .obj files and a div that will contain the Three.js canvas.
     return (
@@ -343,3 +345,5 @@ renderer.domElement.addEventListener('click', onClick);
 
 // Export the component so it can be used in other parts of the application.
 export default SceneComponent;
+
+
