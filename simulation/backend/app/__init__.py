@@ -1,8 +1,28 @@
 from flask import Flask, request, jsonify 
-from flask_cors import CORS 
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager 
+from .auth import auth 
+from .models import Annotation
 
+# Create a flask application
 app = Flask(__name__)
 CORS(app)
+
+# TODO: Update this line with your PostgreSQL connection details
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://username:password@localhost/yourdatabase"
+# Enter a secret key for session management.
+app.config["SECRET_KEY"] = "mysecretkey"
+
+# Initialize the flask-sqlalchemy extension
+db = SQLAlchemy(app)
+
+# LoginMananger initialization
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# Register the auth blueprint
+app.register_blueprint(auth, url_prefix='/auth')
 
 @app.route('/')
 def intro():
