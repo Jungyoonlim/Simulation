@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify 
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager 
-from .auth import auth 
-from .models import Annotation
+from .auth import auth_blueprint 
+# from .models import Annotation
+from .database import db 
 
 # Create a flask application
 app = Flask(__name__)
@@ -14,15 +14,14 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://username:password@localhos
 # Enter a secret key for session management.
 app.config["SECRET_KEY"] = "mysecretkey"
 
-# Initialize the flask-sqlalchemy extension
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # LoginMananger initialization
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 # Register the auth blueprint
-app.register_blueprint(auth, url_prefix='/auth')
+app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
 @app.route('/')
 def intro():
