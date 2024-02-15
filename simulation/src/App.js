@@ -44,6 +44,7 @@ const App = () => {
         {isLoading && <div className="loading-indicator">Loading...</div>}
         {loadError && <div className="error-message">{loadError}</div>}
         <Routes>
+          // TODO: Add routes for the Login page 
           <Route path="/" element={<ModelSelectionPage setModelFile={handleModelFileSelect} />} />
           <Route path="/display" element={<ModelDisplayPage modelFile={modelFile} onObjectLoad={handleObjectLoad} />} />
         </Routes>

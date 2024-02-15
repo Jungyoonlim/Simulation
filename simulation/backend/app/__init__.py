@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_login import LoginManager 
 from .auth import auth_blueprint 
-# from .models import Annotation
 from .database import db 
 
 # Create a flask application
@@ -36,4 +35,3 @@ def add_annotation():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-

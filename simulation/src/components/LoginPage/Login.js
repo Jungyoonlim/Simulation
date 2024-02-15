@@ -54,3 +54,29 @@ const Login = () => {
 };
 
 export default Login; 
+
+/**
+ * TODO: Modify HandleSubmit fn to send the username and password to a backend server. 
+ * 
+ * const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data.message); // Or handle login success (e.g., redirect)
+        } else {
+            console.error('Login failed');
+            // Handle login failure (e.g., show error message)
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+ */

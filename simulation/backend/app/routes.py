@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from . import app, db
 from .models import Annotation 
 
@@ -6,6 +6,11 @@ from .models import Annotation
 Add an annotation to the database.
 This function takes no parameters and returns a JSON object representing the annotation.
 """
+@app.route('/')
+def home():
+    # TODO: Import Login.js ?
+    return render_template('Login.js')
+
 @app.route('/annotations', methods=['GET', 'POST'])
 def add_annotation():
     if request.method == 'POST':
