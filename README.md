@@ -1,7 +1,7 @@
 # Simulation: 3D Robotics Simulation Engine.
 
 ## Overview 
-This project aims to create an advanced 3D model viewer and robotics simulation engine using `Three.js` and React. This tool is designed for developers and researchers focused on robotics, enabling the visualization, annotation, and simulation of robot interactions within a 3D environment. Our goal is to provide a platform that facilitates the development and testing of robotics algorithms, object manipulation, and scenario simulations. 
+This project aims to create an advanced 3D model viewer and annotator using `Three.js` and React. This tool is designed for developers and researchers focused on 3D objects, enabling the visualization and annotation. Our goal is to provide a platform that facilitates the development and testing of robotics algorithms, object manipulation, and scenario simulations. 
 
 ## Features
 - 3D Model Viewing: Load and display `.obj` files within a 3D environment.
@@ -29,7 +29,8 @@ This project aims to create an advanced 3D model viewer and robotics simulation 
 `cd Simulation/backend`
 `pip install -r requirements.txt`
 
-
+## License
+Distributed under the MIT License. See LICENSE for more information.
 
     
 

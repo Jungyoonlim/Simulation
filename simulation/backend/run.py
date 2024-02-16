@@ -1,4 +1,4 @@
-from app import app, db
+from simulation.backend.app.app import app, db
 from app.models import Annotation
 
 @app.shell_context_processor
