@@ -1,7 +1,7 @@
-# Simulation: 3D Robotics Simulation Engine.
+# Simulation: 3D Object Viewer and Annotator. 
 
 ## Overview 
-This project aims to create an advanced 3D model viewer and annotator using `Three.js` and React. This tool is designed for developers and researchers focused on 3D objects, enabling the visualization and annotation. Our goal is to provide a platform that facilitates the development and testing of robotics algorithms, object manipulation, and scenario simulations. 
+This project aims to create an advanced 3D model viewer and annotator using `Three.js` and React. This tool is designed for developers and researchers focused on 3D objects, enabling the visualization and annotation. 
 
 ## Features
 - 3D Model Viewing: Load and display `.obj` files within a 3D environment.
@@ -15,7 +15,7 @@ This project aims to create an advanced 3D model viewer and annotator using `Thr
 
 ## Getting Started
 ### Prerequisites
-- Python Flask
+- Node.JS 
 - React
 - PostgreSQL
 
