@@ -4,7 +4,12 @@ import { useNavigate } from 'react-router-dom';
 // Unsure why it's still all lower caps when I changed the names
 import SceneComponent from './SceneComponent';
 import AnnotationForm from './AnnotationForm';
+import PropTypes from 'prop-types';
 
+ModelDisplayPage.propTypes = {
+    modelFile: PropTypes.string.isRequired,
+    onObjectLoad: PropTypes.func.isRequired,
+};
 
 function ModelDisplayPage({ modelFile, onObjectLoad }){
     const navigate = useNavigate();
