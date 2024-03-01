@@ -1,7 +1,7 @@
 # Simulation: 3D Object Viewer and Annotator. 
 
 ## Overview 
-This project aims to create an advanced 3D model viewer and annotator using `Three.js` and React. This tool is designed for developers and researchers focused on 3D objects, enabling the visualization and annotation. 
+This project aims to play with 3D models. 
 
 ## Features
 - 3D Model Viewing: Load and display `.obj` files within a 3D environment.
