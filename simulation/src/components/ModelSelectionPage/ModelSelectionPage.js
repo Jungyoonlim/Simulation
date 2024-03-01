@@ -1,11 +1,6 @@
 import './ModelSelectionPage.css';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
-
-ModelSelectionPage.propTypes = {
-    setModelFile: PropTypes.func.isRequired,
-  };
 
 function ModelSelectionPage({ setModelFile }){
     const navigate = useNavigate();
