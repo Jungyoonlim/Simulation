@@ -13,7 +13,7 @@ ModelDisplayPage.propTypes = {
 
 function ModelDisplayPage({ modelFile, onObjectLoad }){
     const navigate = useNavigate();
-    const [currentAnnotation, setCurrentAnnotation] = useState(null);
+    const [currentAnnotation] = useState(null);
 
     useEffect(() => {
         // Retrieve the stored model file info
@@ -26,14 +26,6 @@ function ModelDisplayPage({ modelFile, onObjectLoad }){
         // Note: Actual model loading logic will depend on how SceneComponent expects to receive and process the model
     }, [navigate]);
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file && onObjectLoad) {
-            onObjectLoad(file); // Assuming onObjectLoad processes and displays the selected model
-        }
-    };
-
-    // Navigate to the previous page for the back button. 
     const goBack = () => {
         navigate(-1); // Correct usage to go back to the previous page.
     };
@@ -50,6 +42,8 @@ function ModelDisplayPage({ modelFile, onObjectLoad }){
         <div className="model-app-container">
             <div className="model-display-header">
                 <button onClick={goBack} className="back-button">Back to selection</button>
+                {/* If file upload is needed, uncomment and use the input below */}
+                {/* <input type="file" onChange={handleFileChange} /> */}
             </div>
             {currentAnnotation && (
             <AnnotationForm
