@@ -1,7 +1,7 @@
 # Simulation: 3D Object Viewer and Annotator. 
 
 ## Overview 
-This project aims help users interact with 3D models. 
+This project aims to help users interact with 3D models. 
 
 ## Features
 - 3D Model Viewing: Load and display `.obj` files within a 3D environment.
