@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+// Adding prop-types
+import PropTypes from 'prop-types';
+
+AnnotationForm.propTypes = {
+    position: PropTypes.object.isRequired,
+    onSave: PropTypes.func.isRequired,
+  };
 
 const AnnotationForm = ({ position, onSave }) => {
     const [text, setText] = useState('');
