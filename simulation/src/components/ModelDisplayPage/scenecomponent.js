@@ -1,9 +1,10 @@
 // Import necessary modules from React and Three.js.
 import './SceneComponent.css'; 
+import * as THREE from 'three'; 
 import React, { useState, useRef, useEffect } from 'react';
-import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { InteractionManager } from 'three.interaction'; 
 import PropTypes from 'prop-types';
 
 
@@ -29,7 +30,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     const [annotations, setAnnotations] = useState([]);
-    const [hoverMarker, setHoverMarker] = useState(null); 
+    // const [hoverMarker, setHoverMarker] = useState(null); 
     // let currentModelName = useRef('');
 
     SceneComponent.propTypes = {
@@ -40,8 +41,8 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     // Adjust its gamma and tone mapping settings
     renderer.gammaOutput = true;
     renderer.gammaFactor = 2.2; 
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1; 
+    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    // renderer.toneMappingExposure = 1; 
   
     // Load the .obj file using Three.js's OBJLoader
     const objLoader = new OBJLoader();
@@ -95,12 +96,12 @@ function SceneComponent({ modelPath, onObjectLoad }) {
       scene.add(marker);
     };
 
-    const createAnnotation = (position, text) => {
+    const createAnnotation = (localPosition, text) => {
       const annotationData = {
         modelName: modelPath,
-        position_x: position.x,
-        position_y: position.y,
-        position_z: position.z,
+        position_x: localPosition.x,
+        position_y: localPosition.y,
+        position_z: localPosition.z,
         text: text
       };
       fetch('http://localhost:5000/annotations', {
@@ -141,21 +142,33 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
+    // Instance of Interaction Manager and pass the renderer, scene, and camera
+    const interactionManager = new InteractionManager(
+      renderer,
+      camera,
+      renderer.domElement
+    );
+
     // Function to update annotation screen positions  
     const updateAnnotationScreenPositions = () => {
-      annotations.forEach(annotation => {
-        const screenPosition = toScreenPosition(annotation.position, camera, renderer.domElement);
-        if (annotation.markerElement) {
-          annotation.markerElement.style.left = `${screenPosition.x}px`;
-          annotation.markerElement.style.top = `${screenPosition.y}px`;
-        }
-      });
+      if (currentObject && annotations) {
+        annotations.forEach(annotation => {
+          const worldPosition = annotation.localPosition.clone();
+          worldPosition.applyMatrix4(currentObject.matrixWorld);
+          const screenPosition = toScreenPosition(worldPosition, camera, renderer.domElement);
+          annotation.screenPosition = screenPosition;
+          if (annotation.markerElement) {
+            annotation.markerElement.style.left = `${screenPosition.x}px`;
+            annotation.markerElement.style.top = `${screenPosition.y}px`;
+          }
+        });
+      }
     };
 
     // Render function that updates both the scene and the annotations
     const render = () => {
       renderer.render(scene, camera);
-      updateAnnotationScreenPositions(); // Dynamically updates annotation positions
+      updateAnnotationScreenPositions();
     };
 
     // OrbitControls for camera interaction
@@ -204,6 +217,9 @@ function SceneComponent({ modelPath, onObjectLoad }) {
           // Update the OrbitControls target to the center of the object
           controls.target.copy(center);
 
+          // Add the loaded object to the InteractionManager to enable interaction events
+          interactionManager.add(object);
+
           // Add the object to the scene
           scene.add(object);
 
@@ -222,67 +238,50 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         );
       }
     
-      // Handle scene clicks for annotations
-      const onClick = (event) => {
-        const mouse = new THREE.Vector2(
-          (event.clientX / window.innerWidth) * 2 - 1,
-          -(event.clientY / window.innerHeight) * 2 + 1
-        );
-    
-        // Create a raycaster and cast a ray from the mouse position
-        const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(mouse, camera);
-
-        if (hoverMarker){
-          scene.remove(hoverMarker);
-          setHoverMarker(null); 
-        }
-        const intersects = raycaster.intersectObjects(scene.children, true);
-
-        if (intersects.length > 0) {
-          const intersect = intersects[0];
-          const screenPosition = toScreenPosition(intersect.point, camera, renderer.domElement); 
-          const geometry = new THREE.SphereGeometry(0.1, 32, 32);
-          const material = new THREE.MeshBasicMaterial({
-              color: 0x00FF00,
-              transparent: true,
-              opacity: 0.5
-          });
-          const marker = new THREE.Mesh(geometry, material);
-          marker.position.copy(intersect.point);
-          scene.add(marker);
-          setHoverMarker(marker);
-
+      // Function to handle clicks on the scene using InteractionManager from three.interaction
+      const onObjectClick = (event) => {
+        const intersection = event.intersects[0];
+        if (intersection) {
+          const localPoint = intersection.object.worldToLocal(intersection.point.clone());
+          const screenPosition = toScreenPosition(intersection.point, camera, renderer.domElement);
+      
           const annotationName = prompt("Enter annotation name:", `Annotation ${annotations.length + 1}`);
           if (annotationName) {
             const annotation = {
               name: annotationName,
-              modelName: modelPath, 
-              position: intersect.point,
+              modelName: modelPath,
+              localPosition: new THREE.Vector3(localPoint.x, localPoint.y, localPoint.z),
               screenPosition: screenPosition
             };
             setAnnotations(prevAnnotations => [...prevAnnotations, annotation]);
-            createMarker(intersect.point);
+            createMarker(intersection.point);
           }
-
-          const position = {x: 0.1, y: 0.1, z:0.1};
+      
           const text = "Example text";
-          createAnnotation(position,text);
+          createAnnotation(localPoint, text);
         }
       };
-    
-      renderer.domElement.addEventListener('click', onClick);
-    
-      // Cleanup function
+      
+      interactionManager.on('click', onObjectClick);
+
       return () => {
         cancelAnimationFrame(animate);
         controls.removeEventListener('change', updateAnnotationScreenPositions);
-        renderer.domElement.removeEventListener('click', onClick);
-        if (hoverMarker) scene.remove(hoverMarker); 
+        
+        // Remove the InteractionManager event listener and dispose of it
+        interactionManager.off('click', onObjectClick);
+        // interactionManager.dispose();
+      
+        // if (hoverMarker) scene.remove(hoverMarker);
         controls.dispose();
-        if (container && container.contains(renderer.domElement))container.removeChild(renderer.domElement);
+      
+        if (container && container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
+        }
       };
-    }, [modelPath, onObjectLoad, annotations]); 
+    
+      // Cleanup function
+      }, [modelPath, onObjectLoad, annotations]);
     
 
   /**
@@ -323,13 +322,17 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         <div className="annotation-list">
           {annotations.map((annotation, index) => (
             <div key={index} className="annotation-item">
-              {`Annotation ${index + 1} - (x: ${annotation.position.x.toFixed(2)}, y: ${annotation.position.y.toFixed(2)}, z: ${annotation.position.z.toFixed(2)})`}
+            {annotation.localPosition ? (
+              `Annotation ${index + 1} - (x: ${annotation.localPosition.x.toFixed(2)}, y: ${annotation.localPosition.y.toFixed(2)}, z: ${annotation.localPosition.z.toFixed(2)})`
+            ) : (
+              `Annotation ${index + 1}`
+            )}
             </div>
           ))}
-        </div>
+        </div> 
 
             <div className="annotation-list">
-            {annotations.map((annotation, index) => (
+            {annotations && annotations.map((annotation, index) => (
               <div className="annotation-marker" key={index} style={{ 
                   position: 'absolute', 
                   left: `${annotation.screenPosition.x}px`, 
