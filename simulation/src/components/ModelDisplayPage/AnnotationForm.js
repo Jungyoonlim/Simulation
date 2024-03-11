@@ -10,7 +10,7 @@ class Annotation {
 }
 
 const AnnotationForm = ({ position, onSave }) => {
-  const [text, setText] = useState('');
+  const [text] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -19,13 +19,7 @@ const AnnotationForm = ({ position, onSave }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Add Annotation"
-      />
-      <button type="submit">Save Annotation</button>
+
     </form>
   );
 };

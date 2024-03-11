@@ -345,4 +345,3 @@ function SceneComponent({ modelPath, onObjectLoad }) {
 
 // Export the component so it can be used in other parts of the application.
 export default SceneComponent;
-
