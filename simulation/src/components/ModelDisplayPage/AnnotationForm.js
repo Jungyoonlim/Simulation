@@ -19,7 +19,6 @@ const AnnotationForm = ({ position, onSave }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-
     </form>
   );
 };
