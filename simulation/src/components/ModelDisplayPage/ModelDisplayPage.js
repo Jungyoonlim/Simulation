@@ -17,7 +17,7 @@ function ModelDisplayPage({ modelFile, onObjectLoad }) {
     }
     // Proceed to load or display the model using modelName
     // Note: Actual model loading logic will depend on how SceneComponent expects to receive and process the model
-  }, [navigate]);
+  }, [modelFile, navigate]);
 
   // Navigate to the previous page for the back button
   const goBack = () => {
