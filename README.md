@@ -10,27 +10,29 @@ This project aims to help users interact with 3D models.
 - Backend: For storing annotations and 3D model data. 
 
 ## Planned Enhancements
-1. UI/UX Improvements and Object Manipulation: Future versions will feature a more intuitive user interface and allow users to manipulate objects within the 3D scene.
-3. Computer Vision for Automatic Annotations: Implement computer vision algorithms to automatically detect and annotate features within the 3D models.
+1. Better Design 
+    - Design Mockups with Figma
+        - Wireframes
+        - colors, typography, and detailed UI elements 
+    - Annotations
+    - UI/UX
+        - Layout and Navigation
+            - 1. Sidebar/Menu (Animation for this)
+            - 2. Toolbar
+            - 3. Responsive Design 
+                - CSS Flexbox or Grid 
+            - Use `Material-UI` or `@emotion/react` or `@emotion/styled`
+2. Performance Optimization
+    - Optimize 3D Rendering
+    - Lazy Loading 
 
-## Getting Started
-### Prerequisites
-- Node.JS 
-- React
-- PostgreSQL
+    - 
+3. Allow users to manipulate lighting settings 
+4. Allow users to save annotated 3D models + based on their lighting settings 
 
-## Installation
-1. Clone the repo
-`git clone https://github.com/jungyoonlim/Simulation.git`
-2. Install frontend dependencies
-`cd Simulation/frontend`
-`npm install`
-3. Install backend dependencies
-`cd Simulation/backend`
-`pip install -r requirements.txt`
 
 ## License
 Distributed under the MIT License. See LICENSE for more information.
 
-    
+
 
