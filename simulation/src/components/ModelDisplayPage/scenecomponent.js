@@ -1,4 +1,3 @@
-// Import necessary modules from React and Three.js.
 import './SceneComponent.css'; 
 import React, { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
