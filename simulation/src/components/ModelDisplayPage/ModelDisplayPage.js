@@ -2,7 +2,7 @@ import './ModelDisplayPage.css';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import SceneComponent from './sceneComponent';
+import SceneComponent from './SceneComponent';
 import AnnotationForm from './AnnotationForm';
 
 function ModelDisplayPage({ modelFile, onObjectLoad }) {
