@@ -13,7 +13,10 @@ const App = () => {
   // State for loading feedback
   const [isLoading, setIsLoading] = useState(false);
   const [loadError] = useState('');
-  const [modelFile, setModelFile] = useState(null); 
+  const [modelFile, setModelFile] = useState(() => {
+    // Initialize from localStorage if available
+    return localStorage.getItem('selectedModel') || null;
+  });
 
   /**
    * Handles the loading of an object.
@@ -26,17 +29,6 @@ const App = () => {
     setIsLoading(false); // End loading
   };
 
-  /**
-   * Handles the selection of a model file.
-   *
-   * @param {File} file - the selected model file
-   * @return {void} 
-   */
-  //TODO: The handleModelFileSelect function should set the model file URL correctly before navigating to the display page.
-  const handleModelFileSelect = (file) => {
-    setModelFile(file);
-  };
-
   // Render the App component
   return (
     <Router>
@@ -44,7 +36,7 @@ const App = () => {
         {isLoading && <div className="loading-indicator">Loading...</div>}
         {loadError && <div className="error-message">{loadError}</div>}
         <Routes>
-          <Route path="/" element={<ModelSelectionPage setModelFile={handleModelFileSelect} />} />
+          <Route path="/" element={<ModelSelectionPage setModelFile={setModelFile} />} />
           <Route path="/display" element={<ModelDisplayPage modelFile={modelFile} onObjectLoad={handleObjectLoad} />} />
         </Routes>
       </div>

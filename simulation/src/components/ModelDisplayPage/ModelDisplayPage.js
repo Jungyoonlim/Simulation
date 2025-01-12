@@ -9,14 +9,15 @@ function ModelDisplayPage({ modelFile, onObjectLoad }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Retrieve the stored model file info
-    const modelName = localStorage.getItem('selectedModel');
-    if (!modelName) {
-      console.log("No model selected, redirecting to selection page");
+    // Check if we have a model file prop
+    if (!modelFile) {
+      console.log("No model file provided, redirecting to selection page");
       navigate('/');
+      return;
     }
-    // Proceed to load or display the model using modelName
-    // Note: Actual model loading logic will depend on how SceneComponent expects to receive and process the model
+
+    // Store the current model file URL in localStorage
+    localStorage.setItem('selectedModel', modelFile);
   }, [modelFile, navigate]);
 
   // Navigate to the previous page for the back button
