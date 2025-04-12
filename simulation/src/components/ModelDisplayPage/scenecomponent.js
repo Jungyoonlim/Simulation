@@ -174,7 +174,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         const objLoader = new OBJLoader;
 
         // Load the .obj file 
-        objLoader.load(modelPath, (object) => {
+        loader.load(modelPath, (object) => {
           cleanObject(currentObject); 
           currentObject = object;
               
