@@ -232,41 +232,30 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(mouse, camera);
 
-        if (hoverMarker){
-          scene.remove(hoverMarker);
-          setHoverMarker(null); 
-        }
-        const intersects = raycaster.intersectObjects(scene.children, true);
+        // Example: Only intersect with the main loaded model
+        const modelChildren = currentObject ? currentObject.children : [];
+        const intersects = raycaster.intersectObjects(modelChildren, true);
 
         if (intersects.length > 0) {
           const intersect = intersects[0];
-          const screenPosition = toScreenPosition(intersect.point, camera, renderer.domElement); 
-          const geometry = new THREE.SphereGeometry(0.1, 32, 32);
-          const material = new THREE.MeshBasicMaterial({
-              color: 0x00FF00,
-              transparent: true,
-              opacity: 0.5
-          });
-          const marker = new THREE.Mesh(geometry, material);
-          marker.position.copy(intersect.point);
-          scene.add(marker);
-          setHoverMarker(marker);
+          // Convert to model-local coordinates
+          const localPosition = intersect.object.worldToLocal(intersect.point.clone());
 
-          const annotationName = prompt("Enter annotation name:", `Annotation ${annotations.length + 1}`);
-          if (annotationName) {
-            const annotation = {
-              name: annotationName,
-              modelName: modelPath, 
-              position: intersect.point,
-              screenPosition: screenPosition
-            };
-            setAnnotations(prevAnnotations => [...prevAnnotations, annotation]);
-            createMarker(intersect.point);
-          }
+          // Optionally create a 3D marker or store local coordinates
+          createMarker(intersect.point);
 
-          const position = {x: 0.1, y: 0.1, z:0.1};
-          const text = "Example text";
-          createAnnotation(position,text);
+          console.log('World coords:', intersect.point);
+          console.log('Local coords:', localPosition);
+
+          // Store local coords if you want them to remain accurate upon transformations
+          const annotation = {
+            name: 'New Annotation',
+            localPosition,   // store local
+            worldPosition: intersect.point,  // store world
+            modelName: modelPath
+          };
+
+          setAnnotations(prev => [...prev, annotation]);
         }
       };
     

@@ -2,6 +2,7 @@ import './ModelSelectionPage.css';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import sampleModels from '../../data/sampleModels';
 
 function ModelSelectionPage({ setModelFile }) {
   const navigate = useNavigate();
@@ -29,10 +30,36 @@ function ModelSelectionPage({ setModelFile }) {
     }
   };
 
+  const handleSampleSelect = (modelPath) => {
+    setModelFile(modelPath);
+    localStorage.setItem('selectedModel', modelPath);
+    navigate('/display');
+  }
+
+
   return (
-    <div className="app-container">
-      <div className="header">
-        <h1>Select a Model</h1>
+    <div className="header">
+      <h1>Select a Model</h1>
+      
+      {/* Featured Sample Model */}
+      <div className="featured-model">
+        <h2>Try Our Sample Model!</h2>
+        <div className="preview-container">
+          <ModelPreview modelPath={} />
+        </div>
+        <button
+          className="featured-model-button"
+          onClick={() => handleSampleSelect(sampleModels[0].path)}
+        >
+          Load Clock Model
+        </button>
+      </div>
+
+      <div className="separator">- OR -</div>
+
+      {/* Upload Section */}
+      <div className="upload-section">
+        <h2>Upload Your Own Model</h2>
         <input
           type="file"
           onChange={handleFileSelect}
