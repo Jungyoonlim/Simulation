@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import sampleModels from '../../data/sampleModels';
+import ModelPreview from '../ModelPreview/ModelPreview';
 
 function ModelSelectionPage({ setModelFile }) {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ function ModelSelectionPage({ setModelFile }) {
       <div className="featured-model">
         <h2>Try Our Sample Model!</h2>
         <div className="preview-container">
-          <ModelPreview modelPath={} />
+          <ModelPreview modelPath={sampleModels[0].path} />
         </div>
         <button
           className="featured-model-button"

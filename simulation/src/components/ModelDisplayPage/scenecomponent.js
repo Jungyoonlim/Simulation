@@ -29,6 +29,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     const [annotations, setAnnotations] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [hoverMarker, setHoverMarker] = useState(null); 
     // let currentModelName = useRef('');
 
@@ -95,13 +96,14 @@ function SceneComponent({ modelPath, onObjectLoad }) {
       scene.add(marker);
     };
 
-    const createAnnotation = (position, text) => {
+    // eslint-disable-next-line no-unused-vars
+    const createAnnotation = async (annotation) => {
       const annotationData = {
         modelName: modelPath,
-        position_x: position.x,
-        position_y: position.y,
-        position_z: position.z,
-        text: text
+        position_x: annotation.position.x,
+        position_y: annotation.position.y,
+        position_z: annotation.position.z,
+        text: annotation.text
       };
       fetch('http://localhost:5000/annotations', {
         method: 'POST',
