@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 
       return { x: vector.x, y: vector.y };
   };
+  
 /**
  * This function is a React component that sets up a Three.js scene and allows for loading .obj files.
  *
@@ -171,10 +172,10 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     
       // Load model if modelPath is provided
       if (modelPath) {
-        const objLoader = new OBJLoader;
+        const loader = new OBJLoader();
 
         // Load the .obj file 
-        objLoader.load(modelPath, (object) => {
+        loader.load(modelPath, (object) => {
           cleanObject(currentObject); 
           currentObject = object;
               

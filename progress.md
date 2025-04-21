@@ -57,9 +57,4 @@
 - [] TODO: Users to Interact with 3D Model. (Need to think more on how to interact with the model)
 - [] TODO: Just by describing where to go in English, make the robot / 3D object move. (Need to expand on this) 
 
-Add:
-- Physics Engine Integration (Ammo.js or Cannon.js) for realistic simulation of movements, collisions and material properties. 
-- Multi-Robot Coordination: Support for simulating multiple robots within the same environment 
 
-Ideas
- - 3D Environmental Mapping: Use 3D modeling to map out terrains and underwater topographies, aiding in the study of habitats, tracking changes, and planning conservation efforts.
