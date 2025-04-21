@@ -34,5 +34,3 @@ This project aims to help users interact with 3D models.
 ## License
 Distributed under the MIT License. See LICENSE for more information.
 
-
-
