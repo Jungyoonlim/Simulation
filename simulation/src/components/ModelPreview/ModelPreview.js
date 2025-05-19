@@ -52,7 +52,7 @@ function ModelPreview({ modelPath }) {
         
         // Scale model to fit preview
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 3 / maxDim;
+        const scale = 5 / maxDim;
         object.scale.multiplyScalar(scale);
         
         // Center model
@@ -100,7 +100,7 @@ function ModelPreview({ modelPath }) {
       style={{
         width: '200px',
         height: '200px',
-        borderRadius: '8px',
+        borderRadius: '10px',
         overflow: 'hidden',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
       }}
