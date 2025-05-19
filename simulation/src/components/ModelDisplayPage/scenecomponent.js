@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import PropTypes from 'prop-types';
 
 
@@ -25,10 +26,13 @@ import PropTypes from 'prop-types';
  */
 function SceneComponent({ modelPath, onObjectLoad }) {
     const mountRef = useRef(null);
+    const sidebarRef = useRef(null);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const labelRenderer = new CSS2DRenderer();
     const [annotations, setAnnotations] = useState([]);
+    const [selectedAnnotation, setSelectedAnnotation] = useState(null);
     // eslint-disable-next-line no-unused-vars
     const [hoverMarker, setHoverMarker] = useState(null); 
     // let currentModelName = useRef('');
@@ -146,7 +150,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     // Function to update annotation screen positions  
     const updateAnnotationScreenPositions = () => {
       annotations.forEach(annotation => {
-        const screenPosition = toScreenPosition(annotation.position, camera, renderer.domElement);
+        const screenPosition = toScreenPosition(annotation.worldPosition, camera, renderer.domElement);
         if (annotation.markerElement) {
           annotation.markerElement.style.left = `${screenPosition.x}px`;
           annotation.markerElement.style.top = `${screenPosition.y}px`;
@@ -157,7 +161,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     // Render function that updates both the scene and the annotations
     const render = () => {
       renderer.render(scene, camera);
-      updateAnnotationScreenPositions(); // Dynamically updates annotation positions
+      labelRenderer.render(scene, camera);
     };
 
     // OrbitControls for camera interaction
@@ -272,8 +276,9 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         if (hoverMarker) scene.remove(hoverMarker); 
         controls.dispose();
         if (container && container.contains(renderer.domElement))container.removeChild(renderer.domElement);
+        if (container && container.contains(labelRenderer.domElement)) container.removeChild(labelRenderer.domElement);
       };
-    }, [modelPath, onObjectLoad, annotations]); 
+    }, [modelPath, onObjectLoad, annotations, selectedAnnotation]); 
     
 
   /**
@@ -303,7 +308,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
 
     // Return the JSX. It includes a file input for loading .obj files and a div that will contain the Three.js canvas.
     return (
-      <div ref={mountRef} style={{ width: '100%', height: '100vh' }}>
+      <div ref={mountRef} style={{ width: '100%', height: '100vh', position: 'relative' }}>
         {error && <div className="error-message">{error}</div>}
         <input
           type="file"
@@ -311,26 +316,22 @@ function SceneComponent({ modelPath, onObjectLoad }) {
           accept=".obj"
           className="choose-file-button"
         />
-        <div className="annotation-list">
-          {annotations.map((annotation, index) => (
-            <div key={index} className="annotation-item">
-              {`Annotation ${index + 1} - (x: ${annotation.position.x.toFixed(2)}, y: ${annotation.position.y.toFixed(2)}, z: ${annotation.position.z.toFixed(2)})`}
+        {/* Sidebar annotation list */}
+        <div ref={sidebarRef} style={{ position: 'absolute', left: 0, top: 0, width: '250px', background: 'rgba(0,0,0,0.7)', color: 'white', padding: '10px', zIndex: 10, maxHeight: '100vh', overflowY: 'auto' }}>
+          <h4>Annotations</h4>
+          {annotations.map((annotation, idx) => (
+            <div key={idx} style={{ marginBottom: '8px', cursor: 'pointer', fontWeight: selectedAnnotation === idx ? 'bold' : 'normal' }} onClick={() => setSelectedAnnotation(idx)}>
+              {annotation.name} <br />
+              <span style={{ fontSize: '11px', color: '#ccc' }}>
+                ({annotation.worldPosition.x.toFixed(2)}, {annotation.worldPosition.y.toFixed(2)}, {annotation.worldPosition.z.toFixed(2)})
+              </span>
+              {selectedAnnotation === idx && (
+                <div style={{ marginTop: '4px', color: '#ff0' }}>Annotation details here</div>
+              )}
             </div>
           ))}
         </div>
-
-            <div className="annotation-list">
-            {annotations.map((annotation, index) => (
-              <div className="annotation-marker" key={index} style={{ 
-                  position: 'absolute', 
-                  left: `${annotation.screenPosition.x}px`, 
-                  top: `${annotation.screenPosition.y}px` 
-              }}>
-                  {annotation.name}
-              </div>
-            ))}
-            </div>
-    </div>
+      </div>
     );
 }
 
