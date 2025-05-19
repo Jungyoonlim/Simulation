@@ -45,7 +45,7 @@ export function useThreeScene(options = {}){
     }, []);
 
     // Begin render loop
-
+    
 
     // Clean up render loop
 

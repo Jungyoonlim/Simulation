@@ -9,6 +9,11 @@ This project aims to help users interact with 3D models.
 - Object Manipulation: Interact with and manipulate 3D objects within the scene.
 - Backend: For storing annotations and 3D model data. 
 
+## Core Structure
+1. Model Selection 
+2. Model Display 
+3. Three.js Scene 
+
 ## Planned Enhancements
 1. Better Design 
     - Design Mockups with Figma
