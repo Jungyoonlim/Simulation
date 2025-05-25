@@ -241,25 +241,25 @@ function SceneComponent({ modelPath, onObjectLoad }) {
       
       // Render CAD-grade annotation markers
       annotations.forEach((annotation, idx) => {
-        // Ultra-small professional marker
+        // Ultra-small professional marker with proper depth testing
         const geometry = new THREE.SphereGeometry(0.006, 16, 16);
         const material = new THREE.MeshBasicMaterial({ 
           color: selectedAnnotation === idx ? 0xff3d00 : 
                  hoveredAnnotation === idx ? 0x2979ff : 0x00e676,
           transparent: true,
           opacity: 0.9,
-          depthTest: false,
-          depthWrite: false
+          depthTest: true,  // Enable depth testing
+          depthWrite: true  // Enable depth writing
         });
         
         const marker = new THREE.Mesh(geometry, material);
         marker.position.copy(annotation.worldPosition);
         marker.userData.isAnnotation = true;
         marker.userData.annotationIndex = idx;
-        marker.renderOrder = 999;
+        marker.renderOrder = 0; // Normal render order
         scene.add(marker);
         
-        // Professional highlight ring for selected/hovered
+        // Professional highlight ring for selected/hovered with proper depth
         if (selectedAnnotation === idx || hoveredAnnotation === idx) {
           const ringGeometry = new THREE.RingGeometry(0.012, 0.015, 32);
           const ringMaterial = new THREE.MeshBasicMaterial({ 
@@ -267,72 +267,97 @@ function SceneComponent({ modelPath, onObjectLoad }) {
             transparent: true,
             opacity: 0.4,
             side: THREE.DoubleSide,
-            depthTest: false,
-            depthWrite: false
+            depthTest: true,  // Enable depth testing
+            depthWrite: false // Don't write to depth buffer for ring
           });
           const ring = new THREE.Mesh(ringGeometry, ringMaterial);
           ring.position.copy(annotation.worldPosition);
           ring.lookAt(cameraRef.current.position);
           ring.userData.isAnnotation = true;
-          ring.renderOrder = 998;
+          ring.renderOrder = 1; // Slightly higher render order
           scene.add(ring);
         }
         
-        // Professional label - only show on hover or selection
+        // Professional label - only show on hover or selection with occlusion check
         if (selectedAnnotation === idx || hoveredAnnotation === idx) {
-          const labelDiv = document.createElement('div');
-          labelDiv.className = 'cad-annotation-label';
-          labelDiv.innerHTML = `
-            <div style="
-              background: rgba(20, 20, 20, 0.95);
-              color: #ffffff;
-              padding: 4px 8px;
-              border-radius: 3px;
-              font-size: 11px;
-              font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-              font-weight: 500;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-              border: 1px solid rgba(255,255,255,0.1);
-              backdrop-filter: blur(10px);
-              -webkit-backdrop-filter: blur(10px);
-              white-space: nowrap;
-              user-select: none;
-              pointer-events: auto;
-              cursor: pointer;
-            ">
-              <div style="font-weight: 600; margin-bottom: 2px;">${annotation.name}</div>
-              <div style="font-size: 9px; opacity: 0.7;">
-                ${annotation.createdAt ? new Date(annotation.createdAt).toLocaleDateString() : ''}
+          // Check if annotation is visible from current camera position
+          const camera = cameraRef.current;
+          const currentObject = currentObjectRef.current;
+          
+          let isVisible = true;
+          if (currentObject && camera) {
+            // Raycast from camera to annotation to check for occlusion
+            const raycaster = new THREE.Raycaster();
+            const direction = annotation.worldPosition.clone().sub(camera.position).normalize();
+            raycaster.set(camera.position, direction);
+            
+            const intersects = raycaster.intersectObject(currentObject, true);
+            if (intersects.length > 0) {
+              const distanceToAnnotation = camera.position.distanceTo(annotation.worldPosition);
+              const distanceToIntersection = intersects[0].distance;
+              
+              // If there's geometry between camera and annotation, hide the label
+              if (distanceToIntersection < distanceToAnnotation - 0.01) { // Small tolerance
+                isVisible = false;
+              }
+            }
+          }
+          
+          if (isVisible) {
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'cad-annotation-label';
+            labelDiv.innerHTML = `
+              <div style="
+                background: rgba(20, 20, 20, 0.95);
+                color: #ffffff;
+                padding: 4px 8px;
+                border-radius: 3px;
+                font-size: 11px;
+                font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+                font-weight: 500;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                border: 1px solid rgba(255,255,255,0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                white-space: nowrap;
+                user-select: none;
+                pointer-events: auto;
+                cursor: pointer;
+              ">
+                <div style="font-weight: 600; margin-bottom: 2px;">${annotation.name}</div>
+                <div style="font-size: 9px; opacity: 0.7;">
+                  ${annotation.createdAt ? new Date(annotation.createdAt).toLocaleDateString() : ''}
+                </div>
               </div>
-            </div>
-          `;
-          
-          labelDiv.onclick = (e) => {
-            e.stopPropagation();
-            setSelectedAnnotation(selectedAnnotation === idx ? null : idx);
-          };
-          
-          const labelObj = new CSS2DObject(labelDiv);
-          labelObj.position.copy(annotation.worldPosition.clone().add(new THREE.Vector3(0, 0.03, 0)));
-          marker.add(labelObj);
+            `;
+            
+            labelDiv.onclick = (e) => {
+              e.stopPropagation();
+              setSelectedAnnotation(selectedAnnotation === idx ? null : idx);
+            };
+            
+            const labelObj = new CSS2DObject(labelDiv);
+            labelObj.position.copy(annotation.worldPosition.clone().add(new THREE.Vector3(0, 0.03, 0)));
+            marker.add(labelObj);
+          }
         }
       });
       
       // Render pending annotation with professional input
       if (pendingAnnotation && isAnnotationMode) {
-        // Pending marker
+        // Pending marker with proper depth testing
         const geometry = new THREE.SphereGeometry(0.008, 16, 16);
         const material = new THREE.MeshBasicMaterial({ 
           color: 0x2196f3,
           transparent: true,
           opacity: 1,
-          depthTest: false,
-          depthWrite: false
+          depthTest: true,  // Enable depth testing
+          depthWrite: true  // Enable depth writing
         });
         const marker = new THREE.Mesh(geometry, material);
         marker.position.copy(pendingAnnotation.position);
         marker.userData.isAnnotation = true;
-        marker.renderOrder = 999;
+        marker.renderOrder = 0; // Normal render order
         scene.add(marker);
         
         // Professional input UI
