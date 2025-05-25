@@ -9,9 +9,9 @@ import { autoSnapService } from '../../services/ai/autoSnap';
 
 // Dummy stubs for now - replace with real implementations later
 const annotationService = {
-  list: async (projectId) => ({ data: [], error: null }),
+  list: async () => ({ data: [], error: null }),
   create: async (projectId, data) => ({ data: { id: Date.now().toString(), ...data }, error: null }),
-  subscribe: (projectId, callback) => ({ unsubscribe: () => {} })
+  subscribe: () => ({ unsubscribe: () => {} })
 };
 
 const analytics = {
