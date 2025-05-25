@@ -1,8 +1,10 @@
 import './App.css'; 
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './components/Auth/LoginPage';
+import SignupPage from './components/Auth/SignupPage';
+import Dashboard from './components/Dashboard/Dashboard';
 import ModelDisplayPage from './components/ModelDisplayPage/ModelDisplayPage';
-import ModelSelectionPage from './components/ModelSelectionPage/ModelSelectionPage';
 
 /**
  * A function that represents the main App component.
@@ -32,12 +34,23 @@ const App = () => {
   // Render the App component
   return (
     <Router>
-      <div className="app-container">
-        {isLoading && <div className="loading-indicator">Loading...</div>}
-        {loadError && <div className="error-message">{loadError}</div>}
+      <div className="App">
         <Routes>
-          <Route path="/" element={<ModelSelectionPage setModelFile={setModelFile} />} />
-          <Route path="/display" element={<ModelDisplayPage modelFile={modelFile} onObjectLoad={handleObjectLoad} />} />
+          {/* Auth Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          
+          {/* Dashboard */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          
+          {/* Project View */}
+          <Route path="/project/:projectId" element={<ModelDisplayPage />} />
+          
+          {/* Demo/Standalone Mode */}
+          <Route path="/demo" element={<ModelDisplayPage />} />
+          
+          {/* Default redirect */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>
     </Router>

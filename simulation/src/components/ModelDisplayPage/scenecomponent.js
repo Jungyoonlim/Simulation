@@ -5,12 +5,14 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import PropTypes from 'prop-types';
+import { autoSnapService } from '../../services/ai/autoSnap';
+import { annotations as annotationService, analytics } from '../../services/supabase';
 
 /**
  * Professional CAD-grade 3D annotation component
- * Designed for engineering and design professionals
+ * Designed for robotics SLAM mesh validation
  */
-function SceneComponent({ modelPath, onObjectLoad }) {
+function SceneComponent({ modelPath, onObjectLoad, projectId }) {
     const mountRef = useRef(null);
     const sidebarRef = useRef(null);
     const sceneRef = useRef();
@@ -29,11 +31,64 @@ function SceneComponent({ modelPath, onObjectLoad }) {
     const [error, setError] = useState('');
     const [isAnnotationMode, setIsAnnotationMode] = useState(true);
     const [annotationHistory, setAnnotationHistory] = useState([]);
+    const [annotationType, setAnnotationType] = useState('general'); // general, navigation_waypoint, obstacle, path
+    const [aiSnapEnabled, setAiSnapEnabled] = useState(true);
+    const [showAISuggestions, setShowAISuggestions] = useState(true);
     
     SceneComponent.propTypes = {
         modelPath: PropTypes.string.isRequired,
         onObjectLoad: PropTypes.func,
+        projectId: PropTypes.string
     }
+
+    // Initialize AI service
+    useEffect(() => {
+        autoSnapService.initialize();
+    }, []);
+
+    // Load annotations from database if projectId is provided
+    useEffect(() => {
+        if (projectId) {
+            loadAnnotations();
+            // Subscribe to real-time updates
+            const subscription = annotationService.subscribe(projectId, handleAnnotationChange);
+            
+            return () => {
+                subscription.unsubscribe();
+            };
+        }
+    }, [projectId]);
+
+    const loadAnnotations = async () => {
+        if (!projectId) return;
+        
+        const { data, error } = await annotationService.list(projectId);
+        if (!error && data) {
+            setAnnotations(data.map(ann => ({
+                ...ann,
+                worldPosition: new THREE.Vector3(ann.position.x, ann.position.y, ann.position.z)
+            })));
+        }
+    };
+
+    const handleAnnotationChange = (payload) => {
+        if (payload.eventType === 'INSERT') {
+            const newAnn = payload.new;
+            setAnnotations(prev => [...prev, {
+                ...newAnn,
+                worldPosition: new THREE.Vector3(newAnn.position.x, newAnn.position.y, newAnn.position.z)
+            }]);
+        } else if (payload.eventType === 'UPDATE') {
+            setAnnotations(prev => prev.map(ann => 
+                ann.id === payload.new.id ? {
+                    ...payload.new,
+                    worldPosition: new THREE.Vector3(payload.new.position.x, payload.new.position.y, payload.new.position.z)
+                } : ann
+            ));
+        } else if (payload.eventType === 'DELETE') {
+            setAnnotations(prev => prev.filter(ann => ann.id !== payload.old.id));
+        }
+    };
 
     // Generate unique ID for annotations (for database storage)
     const generateAnnotationId = () => {
@@ -371,9 +426,31 @@ function SceneComponent({ modelPath, onObjectLoad }) {
           border: 1px solid rgba(255,255,255,0.1);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          min-width: 180px;
+          min-width: 200px;
           pointer-events: auto;
         `;
+        
+        // AI Suggestion Banner
+        if (pendingAnnotation.aiSuggestion && showAISuggestions) {
+          const suggestionBanner = document.createElement('div');
+          suggestionBanner.style.cssText = `
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(33, 150, 243, 0.2));
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 3px;
+            padding: 4px 8px;
+            margin-bottom: 6px;
+            font-size: 10px;
+            color: #81c784;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+          `;
+          suggestionBanner.innerHTML = `
+            <span>🤖</span>
+            <span>AI: ${pendingAnnotation.aiSuggestion.metadata.type} (${pendingAnnotation.aiSuggestion.metadata.confidence})</span>
+          `;
+          inputContainer.appendChild(suggestionBanner);
+        }
         
         const input = document.createElement('input');
         input.type = 'text';
@@ -393,6 +470,50 @@ function SceneComponent({ modelPath, onObjectLoad }) {
           margin-bottom: 6px;
           box-sizing: border-box;
         `;
+        
+        // Alternative suggestions
+        if (pendingAnnotation.aiSuggestion && pendingAnnotation.aiSuggestion.alternatives.length > 0) {
+          const alternativesDiv = document.createElement('div');
+          alternativesDiv.style.cssText = `
+            display: flex;
+            gap: 4px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+          `;
+          
+          pendingAnnotation.aiSuggestion.alternatives.forEach(alt => {
+            const altBtn = document.createElement('button');
+            altBtn.innerText = alt;
+            altBtn.style.cssText = `
+              background: rgba(255,255,255,0.05);
+              border: 1px solid rgba(255,255,255,0.1);
+              color: rgba(255,255,255,0.6);
+              padding: 2px 6px;
+              border-radius: 3px;
+              font-size: 10px;
+              cursor: pointer;
+              transition: all 0.2s ease;
+            `;
+            altBtn.onmouseenter = () => {
+              altBtn.style.background = 'rgba(255,255,255,0.1)';
+              altBtn.style.color = 'rgba(255,255,255,0.8)';
+            };
+            altBtn.onmouseleave = () => {
+              altBtn.style.background = 'rgba(255,255,255,0.05)';
+              altBtn.style.color = 'rgba(255,255,255,0.6)';
+            };
+            altBtn.onclick = () => {
+              input.value = alt;
+              input.focus();
+            };
+            alternativesDiv.appendChild(altBtn);
+          });
+          
+          inputContainer.appendChild(input);
+          inputContainer.appendChild(alternativesDiv);
+        } else {
+          inputContainer.appendChild(input);
+        }
         
         // Prevent clicks from propagating
         input.onclick = (e) => {
@@ -415,27 +536,69 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         };
         
         // Professional save function
-        const saveAnnotation = () => {
+        const saveAnnotation = async () => {
           const annotationName = input.value.trim();
           if (annotationName) {
             const newAnnotation = {
               id: generateAnnotationId(),
               name: annotationName,
+              type: pendingAnnotation.annotationType || 'general',
               worldPosition: pendingAnnotation.position.clone(),
               localPosition: pendingAnnotation.position.clone(),
               modelName: modelPath,
               createdAt: new Date().toISOString(),
               author: 'Current User', // In real app, get from auth
               tags: [],
-              visibility: 'public'
+              visibility: 'public',
+              aiConfidence: pendingAnnotation.aiSuggestion?.metadata?.confidence,
+              aiSuggestion: pendingAnnotation.aiSuggestion
             };
             
+            // Save to local state
             setAnnotations(prev => [...prev, newAnnotation]);
             setAnnotationHistory(prev => [...prev, { 
               action: 'create', 
               annotation: newAnnotation, 
               timestamp: Date.now() 
             }]);
+            
+            // Save to database if project exists
+            if (projectId) {
+              try {
+                const { data, error } = await annotationService.create(projectId, {
+                  name: annotationName,
+                  type: pendingAnnotation.annotationType || 'general',
+                  position: {
+                    x: pendingAnnotation.position.x,
+                    y: pendingAnnotation.position.y,
+                    z: pendingAnnotation.position.z
+                  },
+                  metadata: {
+                    modelPath: modelPath,
+                    cameraPosition: cameraRef.current.position.toArray(),
+                    cameraTarget: controlsRef.current.target.toArray()
+                  },
+                  aiConfidence: pendingAnnotation.aiSuggestion?.metadata?.confidence,
+                  aiSuggestion: pendingAnnotation.aiSuggestion
+                });
+                
+                if (!error) {
+                  // Update local annotation with database ID
+                  setAnnotations(prev => prev.map(ann => 
+                    ann.id === newAnnotation.id ? { ...ann, id: data.id } : ann
+                  ));
+                  
+                  analytics.trackEvent('annotation_created', {
+                    type: pendingAnnotation.annotationType,
+                    ai_assisted: !!pendingAnnotation.aiSuggestion,
+                    confidence: pendingAnnotation.aiSuggestion?.metadata?.confidence
+                  });
+                }
+              } catch (err) {
+                console.error('Failed to save annotation:', err);
+                setError('Failed to save annotation to cloud');
+              }
+            }
           }
           
           // Force immediate removal of the input container
@@ -580,7 +743,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
       const camera = cameraRef.current;
       const scene = sceneRef.current;
       
-      const handleClick = (event) => {
+      const handleClick = async (event) => {
         // Prevent creating new annotation if clicking on existing UI
         if (event.target.tagName === 'INPUT' || event.target.tagName === 'BUTTON') {
           return;
@@ -611,13 +774,55 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         if (currentObject) {
           const intersects = raycaster.intersectObject(currentObject, true);
           if (intersects.length > 0) {
+            let finalPosition = intersects[0].point.clone();
+            let aiSuggestion = null;
+            
+            // Use AI auto-snap if enabled
+            if (aiSnapEnabled && autoSnapService.isModelLoaded) {
+              analytics.trackEvent('ai_snap_used', { 
+                annotation_type: annotationType,
+                model_type: 'slam_mesh' 
+              });
+              
+              const snapResult = await autoSnapService.findSnapPoint(
+                intersects[0].point,
+                currentObject,
+                annotationType
+              );
+              
+              if (snapResult && snapResult.confidence > 0.5) {
+                finalPosition = snapResult.position;
+                aiSuggestion = snapResult.suggestion;
+                
+                // Visual feedback for snap
+                const snapIndicator = new THREE.Mesh(
+                  new THREE.RingGeometry(0.02, 0.03, 16),
+                  new THREE.MeshBasicMaterial({ 
+                    color: 0x00ff00, 
+                    transparent: true, 
+                    opacity: 0.8 
+                  })
+                );
+                snapIndicator.position.copy(finalPosition);
+                snapIndicator.lookAt(camera.position);
+                scene.add(snapIndicator);
+                
+                // Remove indicator after animation
+                setTimeout(() => {
+                  scene.remove(snapIndicator);
+                }, 500);
+              }
+            }
+            
             // Clear any existing pending annotation first
             setPendingAnnotation(null);
-            // Then set new one
+            // Then set new one with AI suggestion
             setTimeout(() => {
               setPendingAnnotation({ 
-                position: intersects[0].point.clone(), 
-                inputValue: '' 
+                position: finalPosition,
+                inputValue: aiSuggestion?.primary || '',
+                aiSuggestion: aiSuggestion,
+                annotationType: annotationType
               });
             }, 0);
           }
@@ -757,7 +962,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
             marginRight: '32px',
             letterSpacing: '-0.5px'
           }}>
-            CAD Annotator Pro
+            RoboMap Validator
           </div>
           
           {/* Tools */}
@@ -781,6 +986,50 @@ function SceneComponent({ modelPath, onObjectLoad }) {
             >
               <span style={{ fontSize: '14px' }}>📍</span>
               Annotation Mode
+            </button>
+            
+            {/* Annotation Type Selector */}
+            <select
+              value={annotationType}
+              onChange={(e) => setAnnotationType(e.target.value)}
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                color: 'rgba(255, 255, 255, 0.9)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                padding: '6px 12px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              <option value="general" style={{ background: '#1a1a1a' }}>General</option>
+              <option value="navigation_waypoint" style={{ background: '#1a1a1a' }}>Navigation Waypoint</option>
+              <option value="obstacle" style={{ background: '#1a1a1a' }}>Obstacle</option>
+              <option value="path" style={{ background: '#1a1a1a' }}>Path Segment</option>
+            </select>
+            
+            {/* AI Snap Toggle */}
+            <button
+              onClick={() => setAiSnapEnabled(!aiSnapEnabled)}
+              style={{
+                background: aiSnapEnabled ? 'rgba(76, 175, 80, 0.2)' : 'transparent',
+                color: aiSnapEnabled ? '#4caf50' : 'rgba(255, 255, 255, 0.5)',
+                border: '1px solid ' + (aiSnapEnabled ? '#4caf50' : 'rgba(255, 255, 255, 0.2)'),
+                padding: '6px 16px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span style={{ fontSize: '14px' }}>🤖</span>
+              AI Auto-Snap
             </button>
             
             <button
@@ -821,11 +1070,11 @@ function SceneComponent({ modelPath, onObjectLoad }) {
             cursor: 'pointer',
             transition: 'all 0.2s ease'
           }}>
-            Load Model
+            Load SLAM Mesh
             <input
               type="file"
               onChange={handleLoadObject}
-              accept=".obj"
+              accept=".obj,.ply,.pcd"
               style={{ display: 'none' }}
             />
           </label>

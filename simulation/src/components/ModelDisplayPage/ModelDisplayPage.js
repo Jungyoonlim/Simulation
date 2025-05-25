@@ -1,54 +1,88 @@
 import './ModelDisplayPage.css';
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import SceneComponent from './scenecomponent';
 import AnnotationForm from './AnnotationForm';
+import { projects } from '../../services/supabase';
 
-function ModelDisplayPage({ modelFile, onObjectLoad }) {
+function ModelDisplayPage() {
+  const { projectId } = useParams();
   const navigate = useNavigate();
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check if we have a model file prop
-    if (!modelFile) {
-      console.log("No model file provided, redirecting to selection page");
-      navigate('/');
-      return;
+    if (projectId) {
+      loadProject();
+    } else {
+      // Demo mode
+      setLoading(false);
     }
+  }, [projectId]);
 
-    // Store the current model file URL in localStorage
-    localStorage.setItem('selectedModel', modelFile);
-  }, [modelFile, navigate]);
-
-  // Navigate to the previous page for the back button
-  const goBack = () => {
-    navigate(-1);
+  const loadProject = async () => {
+    try {
+      const { data, error } = await projects.get(projectId);
+      if (error) throw error;
+      
+      setProject(data);
+      setLoading(false);
+    } catch (err) {
+      console.error('Failed to load project:', err);
+      setError('Failed to load project');
+      setLoading(false);
+    }
   };
 
-  // Save the annotation to local storage when the form is submitted. TODO: Connect with Backend.
-  const handleSaveAnnotation = (annotation) => {
-    // Save the annotation to local storage
-    const annotations = JSON.parse(localStorage.getItem('annotations')) || [];
-    const updatedAnnotations = [...annotations, annotation];
-    localStorage.setItem('annotations', JSON.stringify(updatedAnnotations));
+  const handleObjectLoad = () => {
+    console.log('3D object loaded successfully');
   };
+
+  if (loading) {
+    return (
+      <div className="model-display-loading">
+        <div className="loading-spinner" />
+        <p>Loading project...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="model-display-error">
+        <p>{error}</p>
+        <button onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
+      </div>
+    );
+  }
 
   return (
-    <div className="model-app-container">
-      <div className="model-display-header">
-        <button onClick={goBack} className="back-button">
-          Back to selection
-        </button>
-      </div>
-      <AnnotationForm position={{}} onSave={handleSaveAnnotation} />
-      <SceneComponent modelPath={modelFile} onObjectLoad={onObjectLoad} />
+    <div className="model-display-container">
+      {projectId && (
+        <div className="project-header">
+          <button 
+            className="back-button"
+            onClick={() => navigate('/dashboard')}
+          >
+            ← Back to Dashboard
+          </button>
+          <h2>{project?.name || 'Untitled Project'}</h2>
+        </div>
+      )}
+      
+      <SceneComponent 
+        modelPath={project?.model_url || "/OBJFile.obj"}
+        onObjectLoad={handleObjectLoad}
+        projectId={projectId}
+      />
     </div>
   );
 }
 
 ModelDisplayPage.propTypes = {
-  modelFile: PropTypes.string.isRequired,
-  onObjectLoad: PropTypes.func.isRequired,
+  projectId: PropTypes.string,
 };
 
 export default ModelDisplayPage;
