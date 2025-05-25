@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import SceneComponent from './scenecomponent';
-import AnnotationForm from './AnnotationForm';
-import { projects } from '../../services/supabase';
 
 function ModelDisplayPage() {
   const { projectId } = useParams();
@@ -21,20 +19,6 @@ function ModelDisplayPage() {
       setLoading(false);
     }
   }, [projectId]);
-
-  const loadProject = async () => {
-    try {
-      const { data, error } = await projects.get(projectId);
-      if (error) throw error;
-      
-      setProject(data);
-      setLoading(false);
-    } catch (err) {
-      console.error('Failed to load project:', err);
-      setError('Failed to load project');
-      setLoading(false);
-    }
-  };
 
   const handleObjectLoad = () => {
     console.log('3D object loaded successfully');

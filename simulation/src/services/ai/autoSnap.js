@@ -1,4 +1,3 @@
-import * as tf from '@tensorflow/tfjs';
 import * as THREE from 'three';
 
 /**
@@ -50,7 +49,7 @@ export class AutoSnapService {
       normal: bestCandidate.normal,
       confidence: bestCandidate.confidence,
       type: bestCandidate.type,
-      suggestion: this.generateAnnotationSuggestion(bestCandidate, annotationType)
+      suggestion: this.generateAnnotationSuggestion(bestCandidate)
     };
   }
 
@@ -65,8 +64,7 @@ export class AutoSnapService {
       obstacles: []
     };
 
-    // Get bounding box for spatial queries
-    const boundingBox = new THREE.Box3().setFromObject(mesh);
+    // Get search radius
     const searchRadius = this.snapThreshold;
 
     // Analyze mesh geometry
@@ -82,10 +80,10 @@ export class AutoSnapService {
         features.corners.push(...this.detectCorners(positions, nearPoint, searchRadius));
         
         // Find flat surfaces (floor, walls)
-        features.planes.push(...this.detectPlanes(positions, nearPoint, searchRadius));
+        features.planes.push(...this.detectPlanes());
         
         // Detect potential obstacles
-        features.obstacles.push(...this.detectObstacles(geometry, nearPoint, searchRadius));
+        features.obstacles.push(...this.detectObstacles(geometry));
       }
     });
 
@@ -162,7 +160,7 @@ export class AutoSnapService {
   /**
    * Detect planes - floors, walls, ceilings for robotics
    */
-  detectPlanes(positions, nearPoint, radius) {
+  detectPlanes() {
     const planes = [];
     // Simplified plane detection for MVP
     // In production, use RANSAC or ML-based plane detection
@@ -173,7 +171,7 @@ export class AutoSnapService {
   /**
    * Detect obstacles for robot navigation
    */
-  detectObstacles(geometry, nearPoint, radius) {
+  detectObstacles(geometry) {
     const obstacles = [];
     
     // Simple height-based obstacle detection
@@ -282,7 +280,7 @@ export class AutoSnapService {
   /**
    * Generate smart annotation suggestions for robotics
    */
-  generateAnnotationSuggestion(snapResult, annotationType) {
+  generateAnnotationSuggestion(snapResult) {
     const suggestions = {
       corner: [
         'Navigation waypoint',

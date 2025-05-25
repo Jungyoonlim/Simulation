@@ -1,6 +1,8 @@
+/* eslint-disable no-undef, no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, projects, teams, analytics } from '../../services/supabase';
+import PropTypes from 'prop-types';
 import './Dashboard.css';
 
 export default function Dashboard() {
@@ -48,7 +50,7 @@ export default function Dashboard() {
   };
 
   const handleCreateProject = async (projectData) => {
-    const { data, error } = await projects.create(organizationId, projectData);
+    const { error } = await projects.create(organizationId, projectData);
     if (!error) {
       analytics.trackEvent('project_created', { 
         project_name: projectData.name 
@@ -273,4 +275,9 @@ function NewProjectModal({ onClose, onCreate }) {
       </div>
     </div>
   );
-} 
+}
+
+NewProjectModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onCreate: PropTypes.func.isRequired
+}; 

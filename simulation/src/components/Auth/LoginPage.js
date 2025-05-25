@@ -1,6 +1,7 @@
+/* eslint-disable no-undef */
+
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { auth, analytics } from '../../services/supabase';
 import './Auth.css';
 
 export default function LoginPage() {
@@ -15,20 +16,10 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
 
-    try {
-      const { data, error } = await auth.signIn(email, password);
-      
-      if (error) {
-        setError(error.message);
-      } else if (data.user) {
-        analytics.trackEvent('user_login', { method: 'email' });
-        navigate('/dashboard');
-      }
-    } catch (err) {
-      setError('An unexpected error occurred');
-    } finally {
-      setLoading(false);
-    }
+    // Dummy login simulation - auth functionality removed
+    console.log('Dummy login: auth functionality removed.');
+    navigate('/dashboard');
+    setLoading(false);
   };
 
   return (

@@ -6,7 +6,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import PropTypes from 'prop-types';
 import { autoSnapService } from '../../services/ai/autoSnap';
-import { annotations as annotationService, analytics } from '../../services/supabase';
 
 /**
  * Professional CAD-grade 3D annotation component
@@ -30,11 +29,10 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
     const [hoveredAnnotation, setHoveredAnnotation] = useState(null);
     const [error, setError] = useState('');
     const [isAnnotationMode, setIsAnnotationMode] = useState(true);
-    const [annotationHistory, setAnnotationHistory] = useState([]);
     const [annotationType, setAnnotationType] = useState('general'); // general, navigation_waypoint, obstacle, path
     const [aiSnapEnabled, setAiSnapEnabled] = useState(true);
-    const [showAISuggestions, setShowAISuggestions] = useState(true);
-    
+    const [showAISuggestions] = useState(true);
+
     SceneComponent.propTypes = {
         modelPath: PropTypes.string.isRequired,
         onObjectLoad: PropTypes.func,
@@ -138,14 +136,14 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
         alpha: true,
         powerPreference: "high-performance"
       });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.2;
       rendererRef.current = renderer;
-      container.appendChild(renderer.domElement);
+        container.appendChild(renderer.domElement);
       
       // Label Renderer for annotations
       const labelRenderer = new CSS2DRenderer();
@@ -167,8 +165,8 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
       
       // Professional lighting setup
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-      scene.add(ambientLight);
-      
+    scene.add(ambientLight);
+
       const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
       mainLight.position.set(5, 5, 5);
       mainLight.castShadow = true;
@@ -227,9 +225,9 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
       const scene = sceneRef.current;
       const camera = cameraRef.current;
       const controls = controlsRef.current;
-      const loader = new OBJLoader();
-      
-      loader.load(modelPath, (object) => {
+        const loader = new OBJLoader();
+
+        loader.load(modelPath, (object) => {
         // Clean up previous object
         if (currentObjectRef.current) {
           scene.remove(currentObjectRef.current);
@@ -243,8 +241,8 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
         currentObjectRef.current = object;
         
         // Apply professional material
-        object.traverse(child => {
-          if (child instanceof THREE.Mesh) {
+          object.traverse(child => {
+            if (child instanceof THREE.Mesh) {
             child.material = new THREE.MeshPhysicalMaterial({ 
               color: 0xc0c0c0,
               metalness: 0.7,
@@ -258,17 +256,17 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
         });
         
         // Professional camera positioning
-        const box = new THREE.Box3().setFromObject(object);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const fov = camera.fov * (Math.PI / 180);
+          const box = new THREE.Box3().setFromObject(object);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const fov = camera.fov * (Math.PI / 180);
         let cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
-        
+
         camera.position.set(center.x, center.y, center.z + cameraZ * 1.2);
-        controls.target.copy(center);
-        scene.add(object);
-        if (onObjectLoad) onObjectLoad(object);
+          controls.target.copy(center);
+          scene.add(object);
+          if (onObjectLoad) onObjectLoad(object);
         controls.update();
       }, undefined, () => {
         setError('Failed to load model. Please ensure the file is a valid OBJ format.');
@@ -556,11 +554,6 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
             
             // Save to local state
             setAnnotations(prev => [...prev, newAnnotation]);
-            setAnnotationHistory(prev => [...prev, { 
-              action: 'create', 
-              annotation: newAnnotation, 
-              timestamp: Date.now() 
-            }]);
             
             // Save to database if project exists
             if (projectId) {
@@ -753,10 +746,10 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
           (event.clientX / window.innerWidth) * 2 - 1,
           -(event.clientY / window.innerHeight) * 2 + 1
         );
-        
+    
         const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(mouse, camera);
-        
+
         // Check for annotation clicks first
         const annotationMeshes = scene.children.filter(child => 
           child.userData.isAnnotation && child.userData.annotationIndex !== undefined
@@ -773,7 +766,7 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
         const currentObject = currentObjectRef.current;
         if (currentObject) {
           const intersects = raycaster.intersectObject(currentObject, true);
-          if (intersects.length > 0) {
+        if (intersects.length > 0) {
             let finalPosition = intersects[0].point.clone();
             let aiSuggestion = null;
             
@@ -898,10 +891,10 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
     };
 
     // Professional file handling
-    const handleLoadObject = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
+  const handleLoadObject = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
         const loader = new OBJLoader();
         loader.load(url, (object) => {
           if (currentObjectRef.current) {
@@ -916,7 +909,7 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
           currentObjectRef.current = object;
           sceneRef.current.add(object);
           adjustCameraToObject(object);
-          if (onObjectLoad) onObjectLoad(object);
+        if (onObjectLoad) onObjectLoad(object);
           
           // Clear annotations for new model
           setAnnotations([]);
@@ -925,9 +918,9 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
         }, undefined, (loadError) => {
           console.error('Failed to load model:', loadError);
           setError('Failed to load model. Please check the file format.');
-        });
-      }
-    };
+      });
+    }
+  };
   
     // Return professional CAD-grade UI
     return (
@@ -1071,9 +1064,9 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
             transition: 'all 0.2s ease'
           }}>
             Load SLAM Mesh
-            <input
-              type="file"
-              onChange={handleLoadObject}
+        <input
+          type="file"
+          onChange={handleLoadObject}
               accept=".obj,.ply,.pcd"
               style={{ display: 'none' }}
             />
@@ -1106,7 +1099,7 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
         
         {/* Professional Sidebar */}
         <div ref={sidebarRef} style={{
-          position: 'absolute',
+                  position: 'absolute', 
           right: '0',
           top: '48px',
           width: '320px',
@@ -1311,8 +1304,8 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
               Hovering: {annotations[hoveredAnnotation]?.name}
             </span>
           )}
-        </div>
-      </div>
+            </div>
+    </div>
     );
 }
 
