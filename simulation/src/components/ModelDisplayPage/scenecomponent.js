@@ -278,15 +278,21 @@ function SceneComponent({ modelPath, onObjectLoad }) {
               localPosition: pendingAnnotation.position.clone(),
               modelName: modelPath
             }]);
+            // Clear pending annotation immediately to remove input box
+            setPendingAnnotation(null);
+          } else {
+            // If empty, just remove the input box
             setPendingAnnotation(null);
           }
         };
         
         input.onkeydown = (e) => {
+          e.stopPropagation(); // Prevent event bubbling
           if (e.key === 'Enter') {
             e.preventDefault();
             saveAnnotation();
           } else if (e.key === 'Escape') {
+            e.preventDefault();
             setPendingAnnotation(null);
           }
         };
@@ -327,7 +333,10 @@ function SceneComponent({ modelPath, onObjectLoad }) {
           saveBtn.style.transform = 'scale(1)';
           saveBtn.style.boxShadow = 'none';
         };
-        saveBtn.onclick = saveAnnotation;
+        saveBtn.onclick = (e) => {
+          e.stopPropagation(); // Prevent event bubbling
+          saveAnnotation();
+        };
         
         // Delicate cancel button
         const cancelBtn = document.createElement('button');
@@ -359,7 +368,10 @@ function SceneComponent({ modelPath, onObjectLoad }) {
           cancelBtn.style.transform = 'scale(1)';
           cancelBtn.style.color = '#64748b';
         };
-        cancelBtn.onclick = () => setPendingAnnotation(null);
+        cancelBtn.onclick = (e) => {
+          e.stopPropagation(); // Prevent event bubbling
+          setPendingAnnotation(null);
+        };
         
         // Assemble the input container
         inputContainer.appendChild(input);
