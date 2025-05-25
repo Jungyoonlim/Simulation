@@ -323,4 +323,33 @@ export class AutoSnapService {
 }
 
 // Export singleton instance
-export const autoSnapService = new AutoSnapService(); 
+export const autoSnapService = new AutoSnapService();
+
+// Dummy AI auto-snap service
+export const autoSnapServiceDummy = {
+  isModelLoaded: false,
+  
+  initialize: () => {
+    console.log('AutoSnap service initialized');
+    autoSnapServiceDummy.isModelLoaded = true;
+  },
+  
+  findSnapPoint: async (point, object, annotationType) => {
+    // Simulate AI processing delay
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Return a dummy snap result
+    return {
+      position: point.clone(),
+      confidence: 0.8,
+      suggestion: {
+        primary: `${annotationType} point`,
+        alternatives: [`${annotationType} marker`, `${annotationType} location`],
+        metadata: {
+          type: annotationType,
+          confidence: '80%'
+        }
+      }
+    };
+  }
+}; 

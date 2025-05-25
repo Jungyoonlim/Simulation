@@ -7,6 +7,17 @@ import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRe
 import PropTypes from 'prop-types';
 import { autoSnapService } from '../../services/ai/autoSnap';
 
+// Dummy stubs for now - replace with real implementations later
+const annotationService = {
+  list: async (projectId) => ({ data: [], error: null }),
+  create: async (projectId, data) => ({ data: { id: Date.now().toString(), ...data }, error: null }),
+  subscribe: (projectId, callback) => ({ unsubscribe: () => {} })
+};
+
+const analytics = {
+  trackEvent: (event, data) => console.log('Analytics:', event, data)
+};
+
 /**
  * Professional CAD-grade 3D annotation component
  * Designed for robotics SLAM mesh validation
@@ -182,6 +193,10 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
       fillLight.position.set(-5, 0, -5);
       scene.add(fillLight);
       
+      // Add a grid helper so there's something visible immediately
+      const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
+      scene.add(gridHelper);
+      
       // Animation loop with proper cleanup
       let animationId;
       const animate = () => {
@@ -268,8 +283,18 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
           scene.add(object);
           if (onObjectLoad) onObjectLoad(object);
         controls.update();
-      }, undefined, () => {
-        setError('Failed to load model. Please ensure the file is a valid OBJ format.');
+      }, 
+      // Progress callback
+      (xhr) => {
+        console.log(`Loading model: ${(xhr.loaded / xhr.total * 100).toFixed(2)}% loaded`);
+      },
+      // Error callback
+      (error) => {
+        console.error('Error loading model:', error);
+        console.error('Model path:', modelPath);
+        setError(`Failed to load model from: ${modelPath}. Please ensure the file exists and is a valid OBJ format.`);
+        // Still call onObjectLoad to stop the loading spinner
+        if (onObjectLoad) onObjectLoad(null);
       });
     }, [modelPath, onObjectLoad]);
 

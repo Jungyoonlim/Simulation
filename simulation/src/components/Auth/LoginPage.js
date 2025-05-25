@@ -84,6 +84,9 @@ export default function LoginPage() {
             <Link to="/signup" className="auth-button secondary">
               Create Free Account
             </Link>
+            <button type="button" className="auth-button secondary" onClick={() => navigate('/dashboard')}>
+              Skip Login (Bypass Validation)
+            </button>
           </form>
 
           <div className="auth-features">

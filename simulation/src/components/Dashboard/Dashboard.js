@@ -18,50 +18,49 @@ export default function Dashboard() {
     checkAuth();
   }, []);
 
+  // Dummy authentication simulation
   const checkAuth = async () => {
-    const { data } = await auth.getUser();
-    if (!data.user) {
-      navigate('/login');
-      return;
-    }
-    
-    setUser(data.user);
-    // In a real app, get organization ID from user metadata
-    const orgId = data.user.user_metadata?.organization_id || 'demo-org';
+    const dummyUser = { email: 'dummy@example.com', user_metadata: { organization_id: 'demo-org' } };
+    setUser(dummyUser);
+    const orgId = dummyUser.user_metadata.organization_id;
     setOrganizationId(orgId);
-    
     await loadProjects(orgId);
     await loadTeamMembers(orgId);
     setLoading(false);
   };
 
+  // Dummy projects loader
   const loadProjects = async (orgId) => {
-    const { data, error } = await projects.list(orgId);
-    if (!error && data) {
-      setProjectList(data);
-    }
+    const dummyProjects = [
+      { id: '1', name: 'Demo Project', description: 'A demo project', annotations: [], created_at: new Date().toISOString() }
+    ];
+    setProjectList(dummyProjects);
   };
 
+  // Dummy team members loader
   const loadTeamMembers = async (orgId) => {
-    const { data, error } = await teams.listMembers(orgId);
-    if (!error && data) {
-      setTeamMembers(data);
-    }
+    const dummyMembers = [
+      { user_id: '1', user: { email: 'team@example.com' }, role: 'Admin', joined_at: new Date().toISOString() }
+    ];
+    setTeamMembers(dummyMembers);
   };
 
+  // Dummy project creation
   const handleCreateProject = async (projectData) => {
-    const { error } = await projects.create(organizationId, projectData);
-    if (!error) {
-      analytics.trackEvent('project_created', { 
-        project_name: projectData.name 
-      });
-      await loadProjects(organizationId);
-      setShowNewProjectModal(false);
-    }
+    console.log('Dummy create project:', projectData);
+    const newProject = {
+      id: (projectList.length + 1).toString(),
+      name: projectData.name,
+      description: projectData.description,
+      annotations: [],
+      created_at: new Date().toISOString()
+    };
+    setProjectList([...projectList, newProject]);
+    setShowNewProjectModal(false);
   };
 
+  // Dummy sign out
   const handleSignOut = async () => {
-    await auth.signOut();
     navigate('/login');
   };
 
@@ -249,7 +248,7 @@ function NewProjectModal({ onClose, onCreate }) {
             <input
               type="text"
               value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
               placeholder="Warehouse Navigation Map"
               required
             />
@@ -258,7 +257,7 @@ function NewProjectModal({ onClose, onCreate }) {
             <label>Description</label>
             <textarea
               value={formData.description}
-              onChange={e => setFormData({...formData, description: e.target.value})}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
               placeholder="SLAM mesh for autonomous warehouse robot navigation"
               rows={3}
             />
