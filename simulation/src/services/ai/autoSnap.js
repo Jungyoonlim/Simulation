@@ -283,42 +283,67 @@ export class AutoSnapService {
   generateAnnotationSuggestion(snapResult) {
     const suggestions = {
       corner: [
-        'Navigation waypoint',
-        'Turn point',
-        'Reference corner'
+        'Navigation waypoint - Turn',
+        'SLAM reference point',
+        'Corner landmark',
+        'Path intersection',
+        'Localization anchor'
       ],
       edge: [
-        'Wall edge',
-        'Path boundary',
-        'Obstacle edge'
+        'Wall boundary',
+        'Obstacle edge - Static',
+        'Navigation constraint',
+        'SLAM feature edge',
+        'Safety boundary'
       ],
       obstacle: [
-        'Detected obstacle',
-        'Dynamic object',
-        'Navigation hazard'
+        'Static obstacle - Verify',
+        'Dynamic obstacle zone',
+        'Collision hazard',
+        'No-go zone',
+        'Obstacle - Requires mapping'
       ],
       path_edge: [
-        'Path segment',
+        'Safe path segment',
         'Navigation corridor',
-        'Safe passage'
+        'Robot lane boundary',
+        'Preferred route',
+        'Emergency exit path'
       ],
       free_space: [
-        'Open area',
-        'Free space',
-        'Exploration zone'
+        'Open navigation area',
+        'Maneuvering zone',
+        'Charging station location',
+        'Staging area',
+        'Dynamic obstacle buffer'
       ]
     };
     
     const typesSuggestions = suggestions[snapResult.type] || suggestions.free_space;
     return {
       primary: typesSuggestions[0],
-      alternatives: typesSuggestions.slice(1),
+      alternatives: typesSuggestions.slice(1, 3), // Show top 2 alternatives
       metadata: {
-        position: `${snapResult.position.x.toFixed(2)}, ${snapResult.position.y.toFixed(2)}, ${snapResult.position.z.toFixed(2)}`,
+        position: `${snapResult.position.x.toFixed(3)}m, ${snapResult.position.y.toFixed(3)}m, ${snapResult.position.z.toFixed(3)}m`,
         confidence: `${(snapResult.confidence * 100).toFixed(0)}%`,
-        type: snapResult.type
+        type: snapResult.type,
+        robotics_context: this.getRoboticsContext(snapResult)
       }
     };
+  }
+  
+  /**
+   * Get robotics-specific context for annotations
+   */
+  getRoboticsContext(snapResult) {
+    const contexts = {
+      corner: 'Critical for robot localization and path planning',
+      edge: 'Important for boundary detection and obstacle avoidance',
+      obstacle: 'Essential for collision-free navigation',
+      path_edge: 'Defines safe navigation corridors',
+      free_space: 'Available for dynamic path planning'
+    };
+    return contexts[snapResult.type] || 'General navigation feature';
   }
 }
 

@@ -319,41 +319,75 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
       
       // Render CAD-grade annotation markers
       annotations.forEach((annotation, idx) => {
-        // Ultra-small professional marker with proper depth testing
-        const geometry = new THREE.SphereGeometry(0.006, 16, 16);
+        // Ultra-precise small marker for robotics applications
+        const geometry = new THREE.SphereGeometry(0.003, 32, 32); // Even smaller, high-quality sphere
         const material = new THREE.MeshBasicMaterial({ 
           color: selectedAnnotation === idx ? 0xff3d00 : 
                  hoveredAnnotation === idx ? 0x2979ff : 0x00e676,
           transparent: true,
-          opacity: 0.9,
-          depthTest: true,  // Enable depth testing
-          depthWrite: true  // Enable depth writing
+          opacity: 1.0, // Full opacity for better visibility
+          depthTest: true,
+          depthWrite: true
         });
         
         const marker = new THREE.Mesh(geometry, material);
         marker.position.copy(annotation.worldPosition);
         marker.userData.isAnnotation = true;
         marker.userData.annotationIndex = idx;
-        marker.renderOrder = 0; // Normal render order
+        marker.renderOrder = 999; // High render order for visibility
         scene.add(marker);
         
-        // Professional highlight ring for selected/hovered with proper depth
+        // Enhanced highlight system for selected/hovered annotations
         if (selectedAnnotation === idx || hoveredAnnotation === idx) {
-          const ringGeometry = new THREE.RingGeometry(0.012, 0.015, 32);
+          // Inner glow effect
+          const glowGeometry = new THREE.SphereGeometry(0.008, 32, 32);
+          const glowMaterial = new THREE.MeshBasicMaterial({ 
+            color: selectedAnnotation === idx ? 0xff3d00 : 0x2979ff,
+            transparent: true,
+            opacity: 0.3,
+            depthTest: true,
+            depthWrite: false
+          });
+          const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+          glow.position.copy(annotation.worldPosition);
+          glow.userData.isAnnotation = true;
+          scene.add(glow);
+          
+          // Outer ring for better visibility
+          const ringGeometry = new THREE.RingGeometry(0.015, 0.02, 64);
           const ringMaterial = new THREE.MeshBasicMaterial({ 
             color: selectedAnnotation === idx ? 0xff3d00 : 0x2979ff,
             transparent: true,
-            opacity: 0.4,
+            opacity: 0.6,
             side: THREE.DoubleSide,
-            depthTest: true,  // Enable depth testing
-            depthWrite: false // Don't write to depth buffer for ring
+            depthTest: true,
+            depthWrite: false
           });
           const ring = new THREE.Mesh(ringGeometry, ringMaterial);
           ring.position.copy(annotation.worldPosition);
           ring.lookAt(cameraRef.current.position);
           ring.userData.isAnnotation = true;
-          ring.renderOrder = 1; // Slightly higher render order
+          ring.renderOrder = 1000;
           scene.add(ring);
+          
+          // Precision crosshair for exact positioning
+          const crosshairSize = 0.01;
+          const crosshairGeometry = new THREE.BufferGeometry();
+          const vertices = new Float32Array([
+            -crosshairSize, 0, 0,  crosshairSize, 0, 0,
+            0, -crosshairSize, 0,  0, crosshairSize, 0,
+            0, 0, -crosshairSize,  0, 0, crosshairSize
+          ]);
+          crosshairGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+          const crosshairMaterial = new THREE.LineBasicMaterial({ 
+            color: selectedAnnotation === idx ? 0xff3d00 : 0x2979ff,
+            opacity: 0.8,
+            transparent: true
+          });
+          const crosshair = new THREE.LineSegments(crosshairGeometry, crosshairMaterial);
+          crosshair.position.copy(annotation.worldPosition);
+          crosshair.userData.isAnnotation = true;
+          scene.add(crosshair);
         }
         
         // Professional label - only show on hover or selection with occlusion check
@@ -555,12 +589,13 @@ function SceneComponent({ modelPath, onObjectLoad, projectId }) {
         
         input.oninput = (e) => {
           e.stopPropagation();
-          setPendingAnnotation(prev => ({ ...prev, inputValue: e.target.value }));
+          // Don't update state on every keystroke to prevent re-renders
+          // Just update the input value directly
         };
         
         // Professional save function
         const saveAnnotation = async () => {
-          const annotationName = input.value.trim();
+          const annotationName = input.value.trim(); // Get value directly from input
           if (annotationName) {
             const newAnnotation = {
               id: generateAnnotationId(),
