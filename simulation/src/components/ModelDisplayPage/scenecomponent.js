@@ -225,8 +225,19 @@ function SceneComponent({ modelPath, onObjectLoad }) {
       const scene = sceneRef.current;
       if (!scene) return;
       
-      // Clear all annotation markers
+      // Clear all annotation markers AND any orphaned input containers
       scene.children = scene.children.filter(child => !child.userData.isAnnotation);
+      
+      // Also remove any CSS2D input containers that might be orphaned
+      const labelRenderer = labelRendererRef.current;
+      if (labelRenderer && labelRenderer.domElement) {
+        const inputContainers = labelRenderer.domElement.querySelectorAll('.annotation-input-container');
+        inputContainers.forEach(container => {
+          if (container.parentNode) {
+            container.parentNode.removeChild(container);
+          }
+        });
+      }
       
       // Render CAD-grade annotation markers
       annotations.forEach((annotation, idx) => {
@@ -326,6 +337,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         
         // Professional input UI
         const inputContainer = document.createElement('div');
+        inputContainer.className = 'annotation-input-container';
         inputContainer.style.cssText = `
           background: rgba(20, 20, 20, 0.98);
           padding: 8px;
@@ -400,7 +412,23 @@ function SceneComponent({ modelPath, onObjectLoad }) {
               timestamp: Date.now() 
             }]);
           }
-          // Always clear pending annotation
+          
+          // Force immediate removal of the input container
+          if (inputContainer && inputContainer.parentNode) {
+            inputContainer.parentNode.removeChild(inputContainer);
+          }
+          
+          // Clear pending annotation state
+          setPendingAnnotation(null);
+        };
+        
+        const cancelAnnotation = () => {
+          // Force immediate removal of the input container
+          if (inputContainer && inputContainer.parentNode) {
+            inputContainer.parentNode.removeChild(inputContainer);
+          }
+          
+          // Clear pending annotation state
           setPendingAnnotation(null);
         };
         
@@ -411,7 +439,7 @@ function SceneComponent({ modelPath, onObjectLoad }) {
             saveAnnotation();
           } else if (e.key === 'Escape') {
             e.preventDefault();
-            setPendingAnnotation(null);
+            cancelAnnotation();
           }
         };
         
@@ -443,10 +471,21 @@ function SceneComponent({ modelPath, onObjectLoad }) {
         saveBtn.onmouseleave = () => {
           saveBtn.style.background = '#2196f3';
         };
-        saveBtn.onclick = (e) => {
+        
+        // Use addEventListener for more reliable event handling
+        const handleSave = (e) => {
+          e.preventDefault();
           e.stopPropagation();
+          e.stopImmediatePropagation();
+          console.log('Save button clicked'); // Debug log
           saveAnnotation();
         };
+        
+        saveBtn.addEventListener('click', handleSave, true);
+        saveBtn.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }, true);
         
         const cancelBtn = document.createElement('button');
         cancelBtn.innerText = 'Cancel';
@@ -470,10 +509,21 @@ function SceneComponent({ modelPath, onObjectLoad }) {
           cancelBtn.style.borderColor = 'rgba(255,255,255,0.2)';
           cancelBtn.style.color = 'rgba(255,255,255,0.7)';
         };
-        cancelBtn.onclick = (e) => {
+        
+        // Use addEventListener for more reliable event handling
+        const handleCancel = (e) => {
+          e.preventDefault();
           e.stopPropagation();
-          setPendingAnnotation(null);
+          e.stopImmediatePropagation();
+          console.log('Cancel button clicked'); // Debug log
+          cancelAnnotation();
         };
+        
+        cancelBtn.addEventListener('click', handleCancel, true);
+        cancelBtn.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }, true);
         
         // Prevent container clicks from propagating
         inputContainer.onclick = (e) => {
