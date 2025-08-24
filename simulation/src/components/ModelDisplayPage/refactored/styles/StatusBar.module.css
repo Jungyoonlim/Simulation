@@ -1,0 +1,36 @@
+/* Status bar styles */
+.statusBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: rgba(20, 20, 20, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  z-index: 1000;
+}
+
+.statusItem {
+  margin-right: 8px;
+}
+
+.separator {
+  margin: 0 8px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.shortcuts {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
+}
+
+.shortcut {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+}

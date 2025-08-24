@@ -40,6 +40,20 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "rules": {
+      "no-undef": "off",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+      "react/prop-types": "off"
+    },
+    "overrides": [
+      {
+        "files": ["**/*.ts", "**/*.tsx"],
+        "rules": {
+          "no-undef": "off"
+        }
+      }
     ]
   },
   "browserslist": {
@@ -56,6 +70,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/three": "^0.179.0",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",
     "jest": "^27.5.1",

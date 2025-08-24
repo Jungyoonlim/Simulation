@@ -2,7 +2,7 @@ import './ModelDisplayPage.css';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import SceneComponent from './scenecomponent';
+import SceneComponent from './refactored';
 
 export default function ModelDisplayPage() {
   const { projectId } = useParams();
