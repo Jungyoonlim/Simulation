@@ -23,7 +23,7 @@ The app code lives in `simulation/` and is built with Vite and TypeScript. Stati
 2. Model Display 
 3. Three.js Scene 
 
-## Planned Enhancements
+## Todos
 - TypeScript Migration
     (  High Priority (Core Components):
   - src/components/Auth/LoginPage.js → .tsx

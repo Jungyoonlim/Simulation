@@ -56,7 +56,7 @@ export default function Signup(){
             setLoading(true); 
 
             try {
-                const { data, error: signUpError } = await auth.signUp(
+                const { data, error } = await auth.signUp(
                     formData.email, 
                     formData.password, 
                     formData.orgName
@@ -64,17 +64,41 @@ export default function Signup(){
 
                 if (error) {
                     setError(error.message);
+                } else if (data?.user) { 
+                    analytics?.trackEvent('user_signup', { 
+                        method: 'email',
+                        plan: formData.plan,
+                    });
+
+                    alert();
+                    navigate('/login');
+                } else { 
+                    setError('Sign up succeeded, but no user was returned.');
                 }
-
-
-            } catch (err) {
+            } catch {
                 setError('An unexpected error occurred');
             } finally {
                 setLoading(false);
             }
-            };
-
+            },
+            [
+                formData.email, 
+                formData.password,
+                formData.orgName, 
+                formData.plan, 
+                navigate, 
+            ]
+        ); 
     return (
+        <div className="auth-container">
+            <div className="auth-background">
+                <div className="auth-gradient" />
+                <div className="auth-pattern" />
+            </div>
 
+
+
+
+        </div>
     )
 }
