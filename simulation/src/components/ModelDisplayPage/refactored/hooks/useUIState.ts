@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { UIState, UseUIStateReturn } from '../types';
+import { UIState, UseUIStateReturn, AnnotationType } from '../types';
 
 const initialState: UIState = {
   isAnnotationMode: true,

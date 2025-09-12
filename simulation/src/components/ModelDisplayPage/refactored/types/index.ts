@@ -158,7 +158,7 @@ export interface AnnotationRendererProps {
   pendingAnnotation: PendingAnnotation | null;
   showAISuggestions: boolean;
   isAnnotationMode: boolean;
-  onAnnotationSave: () => void;
+  onAnnotationSave: (name: string) => void;
   onAnnotationCancel: () => void;
   onInputChange: (value: string) => void;
 }
@@ -166,7 +166,7 @@ export interface AnnotationRendererProps {
 // Hook Types
 export interface UseAnnotationsOptions {
   projectId?: string;
-  modelPath: string;
+  modelPath?: string;
 }
 
 export interface UseAnnotationsReturn {
@@ -176,18 +176,18 @@ export interface UseAnnotationsReturn {
   pendingAnnotation: PendingAnnotation | null;
   isLoading: boolean;
   error: string | null;
-  createAnnotation: (annotation: AnnotationCreateData) => Promise<void>;
-  updateAnnotation: (id: string, data: Partial<Annotation>) => Promise<void>;
+  createAnnotation: (annotation: PendingAnnotation) => Promise<void>;
+  updateAnnotation: (id: string, data: Partial<AnnotationCreateData>) => Promise<void>;
   deleteAnnotation: (id: string) => Promise<void>;
   selectAnnotation: (index: number | null) => void;
   hoverAnnotation: (index: number | null) => void;
   setPendingAnnotation: (annotation: PendingAnnotation | null) => void;
   clearAnnotations: () => void;
-  exportAnnotations: () => void;
+  exportAnnotations: () => ExportData;
 }
 
 export interface UseThreeSceneOptions {
-  modelPath: string;
+  modelPath?: string;
   onObjectLoad?: (object: THREE.Object3D | null) => void;
 }
 
@@ -196,8 +196,8 @@ export interface UseThreeSceneReturn {
   sceneRefs: SceneRefs;
   isLoading: boolean;
   error: string | null;
-  loadModel: (path: string) => void;
-  loadModelFromFile: (file: File) => void;
+  loadModel: (path: string) => Promise<void>;
+  loadModelFromFile: (file: File) => Promise<void>;
   raycast: (mouse: THREE.Vector2, objects?: THREE.Object3D[]) => THREE.Intersection[];
 }
 

@@ -3,6 +3,15 @@
 ## Overview 
 This project aims to help users interact with 3D models. 
 
+## Quick Start (Vite + pnpm)
+- Prereqs: Node 18+, pnpm installed
+- Install: `pnpm install` (from repo root)
+- Dev server: `pnpm --filter simulation dev`
+- Build: `pnpm --filter simulation build`
+- Preview: `pnpm --filter simulation preview`
+
+The app code lives in `simulation/` and is built with Vite and TypeScript. Static assets remain under `simulation/public/`.
+
 ## Features
 - 3D Model Viewing: Load and display `.obj` files within a 3D environment.
 - Interactive Annotations: Add and manage annotations on 3D models with coordinates.
@@ -38,4 +47,3 @@ This project aims to help users interact with 3D models.
 
 ## License
 Distributed under the MIT License. See LICENSE for more information.
-

@@ -1,4 +1,5 @@
 import { Annotation, AnnotationCreateData, ServiceResponse } from '../types';
+import * as THREE from 'three';
 
 // In a real application, replace these with actual API calls
 class AnnotationService {
@@ -67,6 +68,3 @@ class AnnotationService {
 }
 
 export const annotationService = new AnnotationService();
-
-// Import THREE after export to avoid circular dependency
-import * as THREE from 'three';

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { threeService } from '../services/threeService';
-import { UseThreeSceneOptions, UseThreeSceneReturn } from '../types';
+import { UseThreeSceneOptions, UseThreeSceneReturn, SceneRefs } from '../types';
 import { analytics } from '../services/analyticsService';
 
 export function useThreeScene(options: UseThreeSceneOptions = {}): UseThreeSceneReturn {

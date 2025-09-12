@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
-import { UseAnnotationsOptions, UseAnnotationsReturn } from '../types';
+import { UseAnnotationsOptions, UseAnnotationsReturn, Annotation, PendingAnnotation, AnnotationCreateData } from '../types';
 import { annotationService } from '../services/annotationService';
 import { analytics } from '../services/analyticsService';
 

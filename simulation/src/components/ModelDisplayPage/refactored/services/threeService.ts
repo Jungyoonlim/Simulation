@@ -216,7 +216,7 @@ export class ThreeService {
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
     const fov = this.refs.camera.fov * (Math.PI / 180);
-    let cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
+    const cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
 
     this.refs.camera.position.set(center.x, center.y, center.z + cameraZ * 1.2);
     this.refs.controls.target.copy(center);

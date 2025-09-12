@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { ToolbarProps } from '../types';
+import { ToolbarProps, AnnotationType } from '../types';
 import styles from '../styles/Toolbar.module.css';
 
 export const Toolbar: React.FC<ToolbarProps> = ({
