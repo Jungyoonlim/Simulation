@@ -12,8 +12,6 @@ type FormState = {
 };
 
 type uiError = string | null; 
-type Plan = 'free' | 'pro'; 
-
 
 export default function LoginPage(){
     const navigate = useNavigate();

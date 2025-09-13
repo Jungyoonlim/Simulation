@@ -1,5 +1,5 @@
 /*
-
+TypeScript Migration for Dashboard.js 
 */
 import { useState, useEffect } from 'react'; 
 import { Navigate, useNavigate } from 'react-router-dom'; 
@@ -86,13 +86,88 @@ export default function Dashboard() {
     if (loading) {
         return ( 
             <div className="dashboard-loading">
-                <div />
+                <div className="loading-spinner" />
+                <p>Loading Workspace...</p>
             </div>
-        )
+        );
     }
 
     return (
+        <div className="dashboard-container">
+            {/* Header */}
+            <header className="dashboard-header">
+                <div className="header-left">
+                    <h1 className="dashboard-logo">3D platform</h1>
+                    <nav className="header-nav">
+                        <a href="#projects" className="nav-link active">
+                            Projects
+                        </a>
+                        <a href="#team" className="nav-link">
+                            Analytics
+                        </a>
+                        <a href="#settings" className="nav-link">
+                            Settings
+                        </a>
+                    </nav>
+                </div>
+                <div className="header-right">
+                    <div className="user-menu">
+                        <span className="user-email">{user?.email}</span>
+                        <button onClick={handleSignout} className="sign-out-btn">
+                            Sign Out 
+                        </button>
+                    </div>
+                </div>
+            </header>
 
+            {/* Main Content */}
+            <main className="dashboard-main">
+                {/* Stats Overview */}
+                <div className="stats-section">
+                    <div className="stat-card">
+                        <div className="stat-content">
+                            <h3>{projectList.length}</h3>
+                            <p>Active Projects</p>
+                        </div>
+                    </div>
+
+                    <div>
+
+                    </div>
+                    
+                </div>
+            </main>
+
+
+
+        </div>
     )
 
+}
+
+// New Project Modal 
+type NewProjectModalProps = { 
+    onClose: () => void; 
+    onCreate: (data: newProjectData) => void; 
+}
+
+function NewProjectModal({ onClose, onCreate }: NewProjectModalProps){ 
+    const [formData, setFormData] = useState<newProjectData>({ 
+        name: '',
+        description: '',
+        modelUrl: '',
+    });
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault(); 
+        onCreate(formData);
+    };
+
+    return ( 
+        <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                
+            </div>
+        </div>
+    );
 }

@@ -95,7 +95,7 @@ export default function Signup(){
                 <div className="auth-gradient" />
                 <div className="auth-pattern" />
             </div>
-
+        
 
 
 
