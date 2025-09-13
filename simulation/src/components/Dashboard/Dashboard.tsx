@@ -25,8 +25,11 @@ type TeamMember = {
     joined_at: string; 
 }
 
-
-
+type newProjectData = { 
+    name: string; 
+    description: string; 
+    modelUrl?: string; 
+}
 
 export default function Dashboard() {
     const navigate = useNavigate(); 
@@ -38,7 +41,58 @@ export default function Dashboard() {
     const [showNewProjectModal, setShowNewProjectModal] = useState(false); 
     const [orgId, setOrgId] = useState<string | null>(null); 
 
-    
 
+    const loadProjects = async(_orgId: string): Promise<void> => {
+        const dummyProjects: Project[] = [
+            { 
+                id: '1',
+                name: 'Demo Project',
+                description: 'A demo project', 
+                annotations: [], 
+                created_at: new Date().toISOString(),
+            },
+        ];
+        setProjectList(dummyProjects);
+    };
+
+    const loadTeamMembers = async (orgId): Promise<void> => {
+        const dummyMembers: TeamMember[] = [
+            {
+                user_id: '1', 
+                user: { email: 'team@example.com' },
+                role: 'Admin', 
+                joined_at: new Date().toISOString(), 
+            },
+        ];
+        setTeamMembers(dummyMembers);
+    };
+
+    const handleCreateProject = async (projectData: newProjectData): Promise<void> => {
+        const newProject: Project = { 
+            id: (projectList.length + 1).toString(),
+            name: projectData.name,
+            description: projectData.description, 
+            annotations: [],
+            created_at: new Date().toISOString(), 
+        };
+        setProjectList((prev) => [...prev, newProject]); 
+        setShowNewProjectModal(false); 
+    }   
+
+    const handleSignout = async (): Promise<void> => {
+        navigate('/login');
+    };
+
+    if (loading) {
+        return ( 
+            <div className="dashboard-loading">
+                <div />
+            </div>
+        )
+    }
+
+    return (
+
+    )
 
 }
