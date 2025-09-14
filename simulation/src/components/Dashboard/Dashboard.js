@@ -20,7 +20,10 @@ export default function Dashboard() {
 
   // Dummy authentication simulation
   const checkAuth = async () => {
-    const dummyUser = { email: 'dummy@example.com', user_metadata: { organization_id: 'demo-org' } };
+    const dummyUser = { 
+      email: 'dummy@example.com', 
+      user_metadata: { organization_id: 'demo-org' } 
+    };
     setUser(dummyUser);
     const orgId = dummyUser.user_metadata.organization_id;
     setOrganizationId(orgId);
